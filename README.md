@@ -1,7 +1,7 @@
 # Lol Esports API Wrapper
 This is a work in progress!
 
-The current Lol Esports API is confusing weird
+The current Lol Esports API is confusing and weird
 
 Esports API Docs
 https://vickz84259.github.io/lolesports-api-docs/
