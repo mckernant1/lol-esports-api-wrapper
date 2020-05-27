@@ -52,7 +52,10 @@ publishing {
     }
     repositories {
         maven {
-            url = uri("$buildDir/repository")
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/mckernant1/LolEsportsApiWrapper")
+            credentials.username = System.getenv("GITHUB_ACTOR")
+            credentials.password = System.getenv("GITHUB_TOKEN")
         }
     }
 }
