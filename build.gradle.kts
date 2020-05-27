@@ -54,8 +54,8 @@ publishing {
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/mckernant1/LolEsportsApiWrapper")
-            credentials.username = githubProperties["gpr.usr"] ?: System.getenv("GPR_USER")
-            credentials.password = githubProperties["gpr.key"] ?: System.getenv("GPR_API_KEY")
+            credentials.username = System.getenv("GPR_USER")
+            credentials.password = System.getenv("GPR_API_KEY")
         }
     }
 }
