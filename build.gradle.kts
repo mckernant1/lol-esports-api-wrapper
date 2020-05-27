@@ -45,16 +45,17 @@ val dokkaJar by tasks.creating(Jar::class) {
 
 publishing {
     publications {
-        register("gpr") {
-            from(components["java"])
-        }
+	create<MavenPublication>("default") {
+	    from(components["java"])	
+            artifact(dokkaJar)	
+	}
     }
     repositories {
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/mckernant1/LolEsportsApiWrapper")
-            credentials.username = System.getenv("GITHUB_ACTOR")
-            credentials.password = System.getenv("GITHUB_TOKEN")
+            credentials.username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
+            credentials.password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
         }
     }
 }
