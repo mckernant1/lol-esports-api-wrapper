@@ -45,9 +45,8 @@ val dokkaJar by tasks.creating(Jar::class) {
 
 publishing {
     publications {
-        create<MavenPublication>("default") {
+        register("gpr") {
             from(components["java"])
-            artifact(dokkaJar)
         }
     }
     repositories {
