@@ -9,10 +9,3 @@ data class League(
     val region: String
 )
 
-data class LeagueList(
-    val leagues: List<League>
-)
-
-data class LeagueDataWrapper(
-    val data: LeagueList
-)

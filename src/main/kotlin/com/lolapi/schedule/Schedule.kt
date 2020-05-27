@@ -2,34 +2,34 @@ package com.lolapi.schedule
 
 import java.util.*
 
+/**
+ * Match Type ENUM
+ */
 enum class MatchType {
     BO1,
     BO3,
     BO5
 }
 
-data class Game(
-    val blueTeam: String,
-    val redTeam: String,
-    val winner: String = "TBD"
-)
-
+/**
+ * Simple Object to represent a match.
+ * Does not give info about games in a BO3/BO5
+ */
 data class Match(
-    val games: List<Game>,
+    val winner: String,
     val type: MatchType,
     val team1: String,
-    val team2: String
-)
-
-data class Day(
-    val matches: List<Match>,
+    val team2: String,
     val date: Date
 )
 
+/**
+ * Has simple data on an entire split
+ */
 data class Split(
     val startDate: Date,
     val endDate: Date,
-    val days: List<Day>
+    val matches: List<Match>
 )
 
 

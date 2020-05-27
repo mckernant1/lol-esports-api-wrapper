@@ -8,12 +8,15 @@ import org.apache.http.impl.client.HttpClients
 import org.apache.http.protocol.HttpContext
 import org.apache.http.util.EntityUtils
 
+/**
+ * @constructor Takes in an optional esportsApiConfig object
+ */
 class EsportsApiHttpClient(
     esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
 ) {
     private val httpClient = HttpClients
         .custom()
-        .addInterceptorFirst { httpRequest: HttpRequest, httpContext: HttpContext ->
+        .addInterceptorFirst { httpRequest: HttpRequest, _: HttpContext ->
             httpRequest.addHeader(
                 "x-api-key",
                 "0TvQnueqKa5mxJntVWt0w4LpLfEkrV1Ta8rQBb9Z"
@@ -25,6 +28,12 @@ class EsportsApiHttpClient(
         .setHost("esports-api.lolesports.com/persisted/gw/")
         .setParameter("hl", esportsApiConfig.languageCode.code)
 
+    /**
+     * Does a get request against the lol-esports API
+     * @param path the URI path
+     * @param params The URI params
+     * @return The body as a string. It will be JSON
+     */
     fun get(
         path: String,
         params: List<Pair<String, String>> = listOf()
@@ -33,11 +42,11 @@ class EsportsApiHttpClient(
         params.forEach { (key, value) ->
             someURI.setParameter(key, value)
         }
-        val req = HttpGet(someURI.build())
+        val fullURI = someURI.build()
+        val req = HttpGet(fullURI)
         val res = httpClient.execute(req)
 
-        return EntityUtils.toString(res.entity) ?: throw Exception("Request Failed")
+        return EntityUtils.toString(res.entity)
+            ?: throw Exception("Request Failed with URI ${fullURI.toASCIIString()}")
     }
-
-
 }

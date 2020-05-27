@@ -7,12 +7,12 @@ internal class ScheduleClientTest {
     @Test
     fun getSplit() {
         val scheduleClient = ScheduleClient()
-        println(
+        assert(
             scheduleClient.getSplit(
                 "98767991299243165",
                 2020,
-                1
-            )
+                2
+            ).matches.isNotEmpty()
         )
     }
 

@@ -1,5 +1,8 @@
 package com.lolapi.config
 
+/**
+ * Language codes ENUM
+ */
 enum class LanguageCode(val code: String) {
     EN_US("en-US"),
     EN_GB("en-GB"),

@@ -1,29 +1,53 @@
 package com.lolapi.leagues
 
+import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon
 import com.beust.klaxon.KlaxonException
 import com.lolapi.EsportsApiHttpClient
 import com.lolapi.config.EsportsApiConfig
+import java.io.StringReader
 
 class LeagueClient(
     val esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
 ) {
     val esportsApiHttpClient = EsportsApiHttpClient(esportsApiConfig)
 
+    /**
+     * @return The list of all leagues pulled from the API
+     */
     fun getLeagues(): List<League> {
         val res = esportsApiHttpClient.get("getLeagues")
-        val leagues = Klaxon().parse<LeagueDataWrapper>(res)
-            ?: throw KlaxonException("Parsing Failed")
-        return leagues.data.leagues
+        return Klaxon().parseJsonObject(StringReader(res))
+            .obj("data")
+            ?.array<JsonObject>("leagues")
+            ?.mapChildrenObjectsOnly {
+                return@mapChildrenObjectsOnly Klaxon().parse<League>(it.toJsonString())
+                    ?: throw KlaxonException("League parsing failed")
+            }?.toList() ?: throw KlaxonException("Parsing Failed")
     }
 
+    /**
+     * Simple algorithm to remove whitespace from the names
+     * @param name The names can be inconsistant in terms of formatting
+     * @return The league with the closest name
+     */
     fun getLeagueByName(name: String): League {
-        return getLeagues().find { it.name == name }
-            ?: throw NoSuchFieldException("There is no league with name '$name'")
+        return getLeagues().find {
+            it.name.replace(" ", "")
+                .contains(name.replace(" ", ""))
+        } ?: throw NoSuchFieldException("There is no league with name '$name'")
     }
 
+    /**
+     * This algorithm attempts to find the league that's closest to the inputted slug
+     * by removing delimiters
+     * @param slug The slug for the league These are wildly inconsistent in terms of formatting
+     * @return The league closest to the slug
+     */
     fun getLeagueBySlug(slug: String): League {
-        return getLeagues().find { it.slug == slug }
-            ?: throw NoSuchFieldException("There is no league with name '$slug'")
+        return getLeagues().find {
+            it.slug.replace(Regex("[-_ ]"), "")
+                .contains(slug.replace(Regex("[-_ ]"), ""))
+        } ?: throw NoSuchFieldException("There is no league with name '$slug'")
     }
 }
