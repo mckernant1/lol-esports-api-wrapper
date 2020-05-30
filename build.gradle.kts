@@ -4,7 +4,7 @@ plugins {
     id("org.jetbrains.dokka") version "0.10.1"
 }
 
-group = "com.github.mckernant1.lolapi"
+group = "com.github.mckernant1"
 version = "0.0.5"
 
 repositories {
