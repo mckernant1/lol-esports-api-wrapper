@@ -1,2 +1,2 @@
-rootProject.name = "LolEsportsApiWrapper"
+rootProject.name = "lol-esports-api-wrapper"
 

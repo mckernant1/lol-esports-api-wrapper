@@ -26,7 +26,7 @@ class TournamentClient(
             ?.array<JsonObject>("tournaments")
             ?.mapChildrenObjectsOnly {
                 return@mapChildrenObjectsOnly Klaxon().parse<Tournament>(it.toJsonString())
-                    ?: throw KlaxonException("Tournament Parsing failed")
-            }?.toList() ?: throw KlaxonException("Json parsing failed")
+                    ?: throw KlaxonException("Tournament Parsing failed for tournament: $it")
+            }?.toList() ?: throw KlaxonException("Json parsing failed for result: $res")
     }
 }
