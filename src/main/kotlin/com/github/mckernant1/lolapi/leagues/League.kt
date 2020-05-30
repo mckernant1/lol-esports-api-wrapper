@@ -1,4 +1,4 @@
-package com.lolapi.leagues
+package com.github.mckernant1.lolapi.leagues
 
 data class League(
     val name: String,

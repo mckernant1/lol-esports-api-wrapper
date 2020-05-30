@@ -1,4 +1,4 @@
-package com.lolapi.schedule
+package com.github.mckernant1.lolapi.schedule
 
 import org.junit.Test
 

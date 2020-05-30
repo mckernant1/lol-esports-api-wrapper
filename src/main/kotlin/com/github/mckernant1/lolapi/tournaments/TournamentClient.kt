@@ -1,10 +1,10 @@
-package com.lolapi.tournaments
+package com.github.mckernant1.lolapi.tournaments
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon
 import com.beust.klaxon.KlaxonException
-import com.lolapi.EsportsApiHttpClient
-import com.lolapi.config.EsportsApiConfig
+import com.github.mckernant1.lolapi.EsportsApiHttpClient
+import com.github.mckernant1.lolapi.config.EsportsApiConfig
 import java.io.StringReader
 
 class TournamentClient(

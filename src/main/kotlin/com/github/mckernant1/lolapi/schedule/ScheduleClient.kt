@@ -1,11 +1,11 @@
-package com.lolapi.schedule
+package com.github.mckernant1.lolapi.schedule
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon
-import com.lolapi.EsportsApiHttpClient
-import com.lolapi.config.EsportsApiConfig
-import com.lolapi.tournaments.Tournament
-import com.lolapi.tournaments.TournamentClient
+import com.github.mckernant1.lolapi.EsportsApiHttpClient
+import com.github.mckernant1.lolapi.config.EsportsApiConfig
+import com.github.mckernant1.lolapi.tournaments.Tournament
+import com.github.mckernant1.lolapi.tournaments.TournamentClient
 import java.io.StringReader
 import java.sql.Date
 

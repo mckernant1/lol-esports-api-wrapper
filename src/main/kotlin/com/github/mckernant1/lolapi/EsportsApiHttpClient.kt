@@ -1,6 +1,6 @@
-package com.lolapi
+package com.github.mckernant1.lolapi
 
-import com.lolapi.config.EsportsApiConfig
+import com.github.mckernant1.lolapi.config.EsportsApiConfig
 import org.apache.http.HttpRequest
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.utils.URIBuilder

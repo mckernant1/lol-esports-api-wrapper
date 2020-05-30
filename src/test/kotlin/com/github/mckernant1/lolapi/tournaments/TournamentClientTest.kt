@@ -1,4 +1,4 @@
-package com.lolapi.tournaments
+package com.github.mckernant1.lolapi.tournaments
 
 import org.junit.Test
 

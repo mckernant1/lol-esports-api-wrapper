@@ -1,4 +1,4 @@
-package com.lolapi.config
+package com.github.mckernant1.lolapi.config
 
 /**
  * @constructor takes in a language code ENUM. Default is English-US

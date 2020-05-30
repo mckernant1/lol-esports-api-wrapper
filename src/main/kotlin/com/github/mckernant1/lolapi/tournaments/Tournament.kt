@@ -1,4 +1,4 @@
-package com.lolapi.tournaments
+package com.github.mckernant1.lolapi.tournaments
 
 data class Tournament(
     val id: String,

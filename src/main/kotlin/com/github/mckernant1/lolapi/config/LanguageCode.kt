@@ -1,4 +1,4 @@
-package com.lolapi.config
+package com.github.mckernant1.lolapi.config
 
 /**
  * Language codes ENUM
