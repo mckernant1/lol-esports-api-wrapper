@@ -4,8 +4,8 @@ plugins {
     id("org.jetbrains.dokka") version "0.10.1"
 }
 
-group = "com.lolapi"
-version = "0.0.1"
+group = "com.github.mckernant1.lolapi"
+version = "0.0.5"
 
 repositories {
     mavenCentral()
@@ -46,16 +46,18 @@ val dokkaJar by tasks.creating(Jar::class) {
 publishing {
     publications {
 	create<MavenPublication>("default") {
-	    from(components["java"])	
-            artifact(dokkaJar)	
+	    from(components["java"])
+            artifact(dokkaJar)
 	}
     }
     repositories {
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/mckernant1/LolEsportsApiWrapper")
-            credentials.username = System.getenv("GPR_USER")
-            credentials.password = System.getenv("GPR_API_KEY")
+            credentials {
+                username = System.getenv("GPR_USER")
+                password = System.getenv("GPR_API_KEY")
+            }
         }
     }
 }
