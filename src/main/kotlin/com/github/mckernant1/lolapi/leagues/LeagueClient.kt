@@ -39,8 +39,7 @@ class LeagueClient(
     }
 
     /**
-     * This algorithm attempts to find the league that's closest to the inputted slug
-     * by removing delimiters
+     * This algorithm attempts to find the league that's closest to the inputted slug by removing delimiters
      * @param slug The slug for the league These are wildly inconsistent in terms of formatting
      * @return The league closest to the slug
      */
