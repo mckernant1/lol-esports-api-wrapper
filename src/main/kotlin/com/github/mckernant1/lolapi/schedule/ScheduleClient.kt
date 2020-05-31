@@ -12,7 +12,7 @@ import java.sql.Date
 class ScheduleClient(
     val esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
 ) {
-    val esportsApiHttpClient = EsportsApiHttpClient(esportsApiConfig)
+    private val esportsApiHttpClient = EsportsApiHttpClient(esportsApiConfig)
 
     /**
      * @param leagueId The Id of the league gotten from the leagueClient

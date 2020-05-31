@@ -10,7 +10,7 @@ import java.io.StringReader
 class TournamentClient(
     val esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
 ) {
-    val esportsApiHttpClient = EsportsApiHttpClient(esportsApiConfig)
+    private val esportsApiHttpClient = EsportsApiHttpClient(esportsApiConfig)
 
     /**
      * TOURNAMENTS INCLUDE SPLITS + PLAYOFFS

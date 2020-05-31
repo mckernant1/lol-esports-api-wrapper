@@ -10,7 +10,7 @@ import java.io.StringReader
 class LeagueClient(
     val esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
 ) {
-    val esportsApiHttpClient = EsportsApiHttpClient(esportsApiConfig)
+    private val esportsApiHttpClient = EsportsApiHttpClient(esportsApiConfig)
 
     /**
      * @return The list of all leagues pulled from the API
