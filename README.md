@@ -37,8 +37,8 @@ val split = ScheduleClient().getSplit(lcsId, 2020, 1) // Gets spring 2020 split 
 You can also use the general perpose EsportsApiHttpClient to do general queries that return JSON strings
 
 ```kotlin
-val esportsApiHttpClient = EsportsApiHttpClient()
-val split = esportsApiHttpClient.get(
+val rawEsportsApiHttpClient = RawEsportsApiHttpClient()
+val split = rawEsportsApiHttpClient.get(
     "getSchedule",
     listOf(
         Pair("leagueId", leagueId)
@@ -50,5 +50,5 @@ You can give any client a Config Object to change the Language. It defaults to `
 
 ```kotlin
 val esportsApiConfig = EsportsApiConfig(LanguageCode.EN_GB)
-val esportsApiHttpClient = EsportsApiHttpClient(esportsApiConfig)
+val rawEsportsApiHttpClient = RawEsportsApiHttpClient(esportsApiConfig)
 ```
