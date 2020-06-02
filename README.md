@@ -12,7 +12,7 @@ https://vickz84259.github.io/lolesports-api-docs/
 This is a wrapper around the API calls to make it easier for people to develop against it.
 
 ### Install via Gradle
-
+Make sure you add maven central as a repo
 ```kotlin
 dependencies {
     implementation("com.github.mckernant1:lol-esports-api-wrapper:0.0.11")
