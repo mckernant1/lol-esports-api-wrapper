@@ -13,5 +13,6 @@ internal class TournamentClientTest {
                 .getTournamentsForLeague("98767991299243165")
                 .isNotEmpty()
         )
+        tournamentClient.close()
     }
 }

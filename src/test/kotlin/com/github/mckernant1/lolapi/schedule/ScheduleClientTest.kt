@@ -14,6 +14,7 @@ internal class ScheduleClientTest {
                 2
             ).matches.isNotEmpty()
         )
+        scheduleClient.close()
     }
 
 }

@@ -9,15 +9,14 @@ import java.io.StringReader
 
 class TournamentClient(
     val esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
-) {
-    private val esportsApiHttpClient = EsportsApiHttpClient(esportsApiConfig)
+) : EsportsApiHttpClient(esportsApiConfig) {
 
     /**
      * TOURNAMENTS INCLUDE SPLITS + PLAYOFFS
      * @return Returns a list of all the tournaments for a specific league
      */
     fun getTournamentsForLeague(leagueId: String): List<Tournament> {
-        val res = esportsApiHttpClient.get(
+        val res = super.get(
             "/getTournamentsForLeague",
             listOf(Pair("leagueId", leagueId))
         )

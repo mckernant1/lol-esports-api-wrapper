@@ -11,16 +11,14 @@ import java.sql.Date
 
 class ScheduleClient(
     val esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
-) {
-    private val esportsApiHttpClient = EsportsApiHttpClient(esportsApiConfig)
-
+) : EsportsApiHttpClient(esportsApiConfig) {
     /**
      * @param leagueId The Id of the league gotten from the leagueClient
      * @param splitYear The year of the split
      * @param splitNumber The number of the split (1 Spring, 2 Summer)
      */
     fun getSplit(leagueId: String, splitYear: Int, splitNumber: Int): Split {
-        val split = esportsApiHttpClient.get(
+        val split = super.get(
             "getSchedule",
             listOf(
                 Pair("leagueId", leagueId)
@@ -40,7 +38,7 @@ class ScheduleClient(
                 ?.obj("schedule")
                 ?.obj("pages")
                 ?.string("older") ?: break
-            val prevPage = esportsApiHttpClient.get(
+            val prevPage = super.get(
                 "getSchedule",
                 listOf(
                     Pair("leagueId", leagueId),
@@ -102,11 +100,13 @@ class ScheduleClient(
                 var winner: String? = null
                 if (teams?.get(0)
                         ?.obj("result")
-                        ?.string("outcome") == "win") {
+                        ?.string("outcome") == "win"
+                ) {
                     winner = team1
                 } else if (teams?.get(1)
                         ?.obj("result")
-                        ?.string("outcome") == "win") {
+                        ?.string("outcome") == "win"
+                ) {
                     winner = team2
                 }
                 val matchType: MatchType = when (matches

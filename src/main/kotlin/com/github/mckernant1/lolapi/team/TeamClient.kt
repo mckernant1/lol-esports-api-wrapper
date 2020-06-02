@@ -9,14 +9,13 @@ import java.io.StringReader
 
 class TeamClient(
     val esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
-) {
-    private val esportsApiHttpClient = EsportsApiHttpClient(esportsApiConfig)
+) : EsportsApiHttpClient(esportsApiConfig) {
 
     /**
      * @return This list of all teams from the API
      */
     fun getAllTeams(): List<Team> {
-        val teamsString = esportsApiHttpClient.get("getTeams")
+        val teamsString = super.get("getTeams")
         val teamsJson = Klaxon().parseJsonObject(StringReader(teamsString))
         return parseTeams(teamsJson)
     }
@@ -27,7 +26,7 @@ class TeamClient(
      * @param slug The slug of the desired team
      */
     fun getTeamBySlug(slug: String): Team {
-        val teamString = esportsApiHttpClient.get(
+        val teamString = super.get(
             "getTeams",
             listOf(Pair("id", slug))
         )

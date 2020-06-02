@@ -9,14 +9,13 @@ import java.io.StringReader
 
 class LeagueClient(
     val esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
-) {
-    private val esportsApiHttpClient = EsportsApiHttpClient(esportsApiConfig)
+) : EsportsApiHttpClient(esportsApiConfig) {
 
     /**
      * @return The list of all leagues pulled from the API
      */
     fun getLeagues(): List<League> {
-        val res = esportsApiHttpClient.get("getLeagues")
+        val res = super.get("getLeagues")
         return Klaxon().parseJsonObject(StringReader(res))
             .obj("data")
             ?.array<JsonObject>("leagues")

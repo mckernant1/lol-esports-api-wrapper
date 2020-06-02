@@ -9,9 +9,10 @@ import org.apache.http.protocol.HttpContext
 import org.apache.http.util.EntityUtils
 
 /**
+ * Internal HttpClient class
  * @constructor Takes in an optional esportsApiConfig object
  */
-class EsportsApiHttpClient(
+open class EsportsApiHttpClient(
     esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
 ) {
     private val httpClient = HttpClients
@@ -28,13 +29,7 @@ class EsportsApiHttpClient(
         .setHost("esports-api.lolesports.com/persisted/gw/")
         .setParameter("hl", esportsApiConfig.languageCode.code)
 
-    /**
-     * Does a get request against the lol-esports API
-     * @param path the URI path
-     * @param params The URI params
-     * @return The body as a string. It will be JSON
-     */
-    fun get(
+    protected fun get(
         path: String,
         params: List<Pair<String, String>> = listOf()
     ): String {
@@ -48,5 +43,15 @@ class EsportsApiHttpClient(
 
         return EntityUtils.toString(res.entity)
             ?: throw Exception("Request Failed with URI ${fullURI.toASCIIString()}")
+    }
+
+    protected fun get(
+        path: String
+    ): String {
+        return get(path, listOf())
+    }
+
+    fun close() {
+        httpClient.close()
     }
 }
