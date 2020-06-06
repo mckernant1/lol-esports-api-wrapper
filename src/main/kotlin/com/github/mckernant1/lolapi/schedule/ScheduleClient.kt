@@ -10,7 +10,7 @@ import java.io.StringReader
 import java.sql.Date
 
 class ScheduleClient(
-    val esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
+    esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
 ) : EsportsApiHttpClient(esportsApiConfig) {
     /**
      * @param leagueId The Id of the league gotten from the leagueClient
@@ -24,7 +24,7 @@ class ScheduleClient(
                 Pair("leagueId", leagueId)
             )
         )
-        val json: JsonObject = Klaxon().parseJsonObject(StringReader(split))
+        val json: JsonObject = parser.parseJsonObject(StringReader(split))
         val tourney = getTourneyForSplit(leagueId, splitYear, splitNumber)
         val startDate = Date.valueOf(tourney.startDate)
         val endDate = Date.valueOf(tourney.endDate)
@@ -45,7 +45,7 @@ class ScheduleClient(
                     Pair("pageToken", prevPageToken)
                 )
             )
-            prevJson = Klaxon().parseJsonObject(StringReader(prevPage))
+            prevJson = parser.parseJsonObject(StringReader(prevPage))
             val newMatches = parseMatches(prevJson).filter {
                 it.date > startDate &&
                         it.date < endDate
@@ -92,6 +92,7 @@ class ScheduleClient(
                 val date = Date.valueOf(event.string("startTime")
                     ?.takeWhile { it != 'T' })
                 val matches = event.obj("match")
+                val matchId = matches?.string("id")
                 val teams = matches
                     ?.array<JsonObject>("teams")
                 val team1 = teams?.get(0)?.string("name")
@@ -118,6 +119,8 @@ class ScheduleClient(
                     else -> throw NumberFormatException("Best of must be 1, 3, or 5")
                 }
                 return@mapChildrenObjectsOnly Match(
+                    id = matchId!!,
+                    gameIds = getGameIdsForMatchId(matchId),
                     team1 = team1!!,
                     team2 = team2!!,
                     type = matchType,
@@ -125,5 +128,23 @@ class ScheduleClient(
                     date = date
                 )
             }!!.toList()
+    }
+
+
+    private fun getGameIdsForMatchId(matchId: String): List<String> {
+        val eventDetails = super.get("getEventDetails", listOf(Pair("id", matchId)))
+        val eventDetailsJson = parser.parseJsonObject(StringReader(eventDetails))
+
+        return eventDetailsJson.obj("data")
+            ?.obj("event")
+            ?.obj("match")
+            ?.array<JsonObject>("games")
+            ?.mapChildrenObjectsOnly {
+                it.string("id")!!
+            }!!.toList()
+    }
+    
+    companion object {
+        val parser = Klaxon()
     }
 }

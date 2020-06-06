@@ -3,7 +3,7 @@ package com.github.mckernant1.lolapi
 import com.github.mckernant1.lolapi.config.EsportsApiConfig
 
 class RawEsportsApiHttpClient(
-    val esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
+    esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
 ) : EsportsApiHttpClient(esportsApiConfig) {
 
     /**

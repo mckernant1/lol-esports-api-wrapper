@@ -8,7 +8,7 @@ import com.github.mckernant1.lolapi.config.EsportsApiConfig
 import java.io.StringReader
 
 class TeamClient(
-    val esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
+    esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
 ) : EsportsApiHttpClient(esportsApiConfig) {
 
     /**
@@ -16,7 +16,7 @@ class TeamClient(
      */
     fun getAllTeams(): List<Team> {
         val teamsString = super.get("getTeams")
-        val teamsJson = Klaxon().parseJsonObject(StringReader(teamsString))
+        val teamsJson = parser.parseJsonObject(StringReader(teamsString))
         return parseTeams(teamsJson)
     }
 
@@ -30,7 +30,7 @@ class TeamClient(
             "getTeams",
             listOf(Pair("id", slug))
         )
-        val teamJson = Klaxon().parseJsonObject(StringReader(teamString))
+        val teamJson = parser.parseJsonObject(StringReader(teamString))
         return parseTeams(teamJson).find { it.slug == slug }
             ?: throw IllegalArgumentException("Team with this slug does not exist")
     }
@@ -75,9 +75,13 @@ class TeamClient(
     private fun parsePlayers(teamJson: JsonObject): List<Player> {
         return teamJson.array<JsonObject>("players")
             ?.mapChildrenObjectsOnly {
-                return@mapChildrenObjectsOnly Klaxon().parse<Player>(it.toJsonString())
+                return@mapChildrenObjectsOnly parser.parse<Player>(it.toJsonString())
                     ?: throw KlaxonException("Error parsing player with jsonString ${it.toJsonString()}")
             }?.toList()
             ?: throw KlaxonException("Error parsing team with json $teamJson")
+    }
+
+    companion object {
+        val parser = Klaxon()
     }
 }

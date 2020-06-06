@@ -8,7 +8,7 @@ import com.github.mckernant1.lolapi.config.EsportsApiConfig
 import java.io.StringReader
 
 class LeagueClient(
-    val esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
+    esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
 ) : EsportsApiHttpClient(esportsApiConfig) {
 
     /**
@@ -16,11 +16,11 @@ class LeagueClient(
      */
     fun getLeagues(): List<League> {
         val res = super.get("getLeagues")
-        return Klaxon().parseJsonObject(StringReader(res))
+        return parser.parseJsonObject(StringReader(res))
             .obj("data")
             ?.array<JsonObject>("leagues")
             ?.mapChildrenObjectsOnly {
-                return@mapChildrenObjectsOnly Klaxon().parse<League>(it.toJsonString())
+                return@mapChildrenObjectsOnly parser.parse<League>(it.toJsonString())
                     ?: throw KlaxonException("League parsing failed")
             }?.toList() ?: throw KlaxonException("Parsing Failed")
     }
@@ -47,5 +47,9 @@ class LeagueClient(
             it.slug.replace(Regex("[-_ ]"), "")
                 .contains(slug.replace(Regex("[-_ ]"), ""))
         } ?: throw NoSuchFieldException("There is no league with name '$slug'")
+    }
+
+    companion object {
+        val parser = Klaxon()
     }
 }

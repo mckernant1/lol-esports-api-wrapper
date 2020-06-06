@@ -7,12 +7,17 @@ internal class ScheduleClientTest {
     @Test
     fun getSplit() {
         val scheduleClient = ScheduleClient()
+        val split = scheduleClient.getSplit(
+            "98767991299243165",
+            2020,
+            2
+        )
         assert(
-            scheduleClient.getSplit(
-                "98767991299243165",
-                2020,
-                2
-            ).matches.isNotEmpty()
+            split.matches.isNotEmpty()
+        )
+
+        assert(
+            split.matches.fold(true) {acc: Boolean, match: Match -> acc && match.gameIds.size == match.type.numberOfGames }
         )
         scheduleClient.close()
     }

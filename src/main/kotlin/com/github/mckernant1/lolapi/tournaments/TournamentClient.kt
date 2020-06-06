@@ -8,7 +8,7 @@ import com.github.mckernant1.lolapi.config.EsportsApiConfig
 import java.io.StringReader
 
 class TournamentClient(
-    val esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
+    esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
 ) : EsportsApiHttpClient(esportsApiConfig) {
 
     /**
@@ -20,12 +20,16 @@ class TournamentClient(
             "/getTournamentsForLeague",
             listOf(Pair("leagueId", leagueId))
         )
-        return Klaxon().parseJsonObject(StringReader(res)).obj("data")
+        return parser.parseJsonObject(StringReader(res)).obj("data")
             ?.array<JsonObject>("leagues")?.get(0)
             ?.array<JsonObject>("tournaments")
             ?.mapChildrenObjectsOnly {
-                return@mapChildrenObjectsOnly Klaxon().parse<Tournament>(it.toJsonString())
+                return@mapChildrenObjectsOnly parser.parse<Tournament>(it.toJsonString())
                     ?: throw KlaxonException("Tournament Parsing failed for tournament: $it")
             }?.toList() ?: throw KlaxonException("Json parsing failed for result: $res")
+    }
+
+    companion object {
+        val parser = Klaxon()
     }
 }

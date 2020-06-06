@@ -5,10 +5,10 @@ import java.util.*
 /**
  * Match Type ENUM
  */
-enum class MatchType {
-    BO1,
-    BO3,
-    BO5
+enum class MatchType(val numberOfGames: Int) {
+    BO1(1),
+    BO3(3),
+    BO5(5)
 }
 
 /**
@@ -16,6 +16,8 @@ enum class MatchType {
  * Does not give info about games in a BO3/BO5
  */
 data class Match(
+    val id: String,
+    val gameIds: List<String>,
     val winner: String,
     val type: MatchType,
     val team1: String,
