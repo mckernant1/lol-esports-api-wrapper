@@ -82,6 +82,6 @@ class TeamClient(
     }
 
     companion object {
-        val parser = Klaxon()
+        private val parser = Klaxon()
     }
 }
