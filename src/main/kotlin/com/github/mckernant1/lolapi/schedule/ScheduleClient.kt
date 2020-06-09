@@ -8,6 +8,8 @@ import com.github.mckernant1.lolapi.tournaments.Tournament
 import com.github.mckernant1.lolapi.tournaments.TournamentClient
 import java.io.StringReader
 import java.sql.Date
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ScheduleClient(
     esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
@@ -89,8 +91,9 @@ class ScheduleClient(
             ?.obj("schedule")
             ?.array<JsonObject>("events")
             ?.mapChildrenObjectsOnly { event ->
-                val date = Date.valueOf(event.string("startTime")
-                    ?.takeWhile { it != 'T' })
+                val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+                formatter.timeZone = TimeZone.getTimeZone("UTC")
+                val date = formatter.parse(event.string("startTime"))
                 val matches = event.obj("match")
                 val matchId = matches?.string("id")
                 val teams = matches
@@ -143,7 +146,7 @@ class ScheduleClient(
                 it.string("id")!!
             }!!.toList()
     }
-    
+
     companion object {
         val parser = Klaxon()
     }
