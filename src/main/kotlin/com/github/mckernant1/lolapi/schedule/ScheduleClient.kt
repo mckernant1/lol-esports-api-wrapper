@@ -6,13 +6,15 @@ import com.github.mckernant1.lolapi.EsportsApiHttpClient
 import com.github.mckernant1.lolapi.config.EsportsApiConfig
 import com.github.mckernant1.lolapi.tournaments.Tournament
 import com.github.mckernant1.lolapi.tournaments.TournamentClient
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
 import java.io.StringReader
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
 class ScheduleClient(
-    esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
+        esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
 ) : EsportsApiHttpClient(esportsApiConfig) {
     /**
      * @param leagueId The Id of the league gotten from the leagueClient
@@ -21,10 +23,10 @@ class ScheduleClient(
      */
     fun getSplit(leagueId: String, splitYear: Int, splitNumber: Int): Split {
         val split = super.get(
-            "getSchedule",
-            listOf(
-                Pair("leagueId", leagueId)
-            )
+                "getSchedule",
+                listOf(
+                        Pair("leagueId", leagueId)
+                )
         )
         val json: JsonObject = parser.parseJsonObject(StringReader(split))
         val tourney = getTourneyForSplit(leagueId, splitYear, splitNumber)
@@ -38,15 +40,15 @@ class ScheduleClient(
         var prevJson = json
         while (matches.find { it.date < startDate } == null) {
             val prevPageToken = (prevJson.obj("data")
-                ?.obj("schedule")
-                ?.obj("pages")
-                ?.string("older") ?: break)
+                    ?.obj("schedule")
+                    ?.obj("pages")
+                    ?.string("older") ?: break)
             val prevPage = super.get(
-                "getSchedule",
-                listOf(
-                    Pair("leagueId", leagueId),
-                    Pair("pageToken", prevPageToken)
-                )
+                    "getSchedule",
+                    listOf(
+                            Pair("leagueId", leagueId),
+                            Pair("pageToken", prevPageToken)
+                    )
             )
             prevJson = parser.parseJsonObject(StringReader(prevPage))
             val newMatches = parseMatches(prevJson).filter {
@@ -87,72 +89,84 @@ class ScheduleClient(
      * Helper method to parse JSON
      */
     private fun parseMatches(json: JsonObject): List<Match> {
-        return json
-            .obj("data")
-            ?.obj("schedule")
-            ?.array<JsonObject>("events")
-            ?.mapChildrenObjectsOnly { event ->
-                lateinit var date: Date
-                try {
-                    val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
-                    formatter.timeZone = TimeZone.getTimeZone("UTC")
-                    date = formatter.parse(event.string("startTime"))
-                } catch (e: ParseException) {
-                    val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-                    formatter.timeZone = TimeZone.getTimeZone("UTC")
-                    date = formatter.parse(event.string("startTime"))
-                }
-                val matches = event.obj("match")
-                val matchId = matches?.string("id")
-                val teams = matches
-                    ?.array<JsonObject>("teams")
-                val team1 = teams?.get(0)?.string("name")
-                val team2 = teams?.get(1)?.string("name")
+        return runBlocking {
+            return@runBlocking json
+                    .obj("data")
+                    ?.obj("schedule")
+                    ?.array<JsonObject>("events")
+                    ?.mapChildrenObjectsOnly { event: JsonObject ->
+                        async { eventToMatch(event) }
+                    }!!.map { it.await() }.toList()
+        }
+    }
 
-                var winner: String? = null
-                if (teams?.get(0)
+    /*
+     * Async method to parse an event to a match. Also retrieves the gameIds
+     */
+    private suspend fun eventToMatch(event: JsonObject): Match {
+        lateinit var date: Date
+        try {
+            val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+            formatter.timeZone = TimeZone.getTimeZone("UTC")
+            date = formatter.parse(event.string("startTime"))
+        } catch (e: ParseException) {
+            val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+            formatter.timeZone = TimeZone.getTimeZone("UTC")
+            date = formatter.parse(event.string("startTime"))
+        }
+        val matches = event.obj("match")
+        val matchId = matches?.string("id")
+        val teams = matches
+                ?.array<JsonObject>("teams")
+        val team1 = teams?.get(0)?.string("name")
+        val team2 = teams?.get(1)?.string("name")
+
+        var winner: String? = null
+        if (teams?.get(0)
                         ?.obj("result")
                         ?.string("outcome") == "win"
-                ) {
-                    winner = team1
-                } else if (teams?.get(1)
+        ) {
+            winner = team1
+        } else if (teams?.get(1)
                         ?.obj("result")
                         ?.string("outcome") == "win"
-                ) {
-                    winner = team2
-                }
-                val matchType: MatchType = when (matches
-                    ?.obj("strategy")
-                    ?.int("count")) {
-                    1 -> MatchType.BO1
-                    3 -> MatchType.BO3
-                    5 -> MatchType.BO5
-                    else -> throw NumberFormatException("Best of must be 1, 3, or 5")
-                }
-                return@mapChildrenObjectsOnly Match(
-                    id = matchId!!,
-                    gameIds = getGameIdsForMatchId(matchId),
-                    team1 = team1!!,
-                    team2 = team2!!,
-                    type = matchType,
-                    winner = winner ?: "TBD",
-                    date = date
-                )
-            }!!.toList()
+        ) {
+            winner = team2
+        }
+
+        val bestOfVar = matches
+                ?.obj("strategy")
+                ?.int("count")
+
+        val matchType: MatchType = when (bestOfVar) {
+            1 -> MatchType.BO1
+            3 -> MatchType.BO3
+            5 -> MatchType.BO5
+            else -> throw NumberFormatException("Best of must be 1, 3, or 5. Instead it was $bestOfVar")
+        }
+        return Match(
+                id = matchId!!,
+                gameIds = getGameIdsForMatchId(matchId),
+                team1 = team1!!,
+                team2 = team2!!,
+                type = matchType,
+                winner = winner ?: "TBD",
+                date = date
+        )
     }
 
 
-    private fun getGameIdsForMatchId(matchId: String): List<String> {
+    private suspend fun getGameIdsForMatchId(matchId: String): List<String> {
         val eventDetails = super.get("getEventDetails", listOf(Pair("id", matchId)))
         val eventDetailsJson = parser.parseJsonObject(StringReader(eventDetails))
 
         return eventDetailsJson.obj("data")
-            ?.obj("event")
-            ?.obj("match")
-            ?.array<JsonObject>("games")
-            ?.mapChildrenObjectsOnly {
-                it.string("id")!!
-            }!!.toList()
+                ?.obj("event")
+                ?.obj("match")
+                ?.array<JsonObject>("games")
+                ?.mapChildrenObjectsOnly {
+                    it.string("id")!!
+                }!!.toList()
     }
 
     companion object {

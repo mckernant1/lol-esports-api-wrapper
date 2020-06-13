@@ -42,7 +42,7 @@ class TeamClient(
      * @return The team
      */
     fun getTeamByCode(code: String): Team {
-        return getAllTeams().find { it.code.toLowerCase() == code.toLowerCase() }
+        return getAllTeams().find { it.code.equals(code, ignoreCase = true) }
             ?: throw IllegalArgumentException("there is no team with code ${code.toLowerCase()}")
     }
 

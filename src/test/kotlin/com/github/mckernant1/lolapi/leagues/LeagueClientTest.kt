@@ -1,13 +1,16 @@
 package com.github.mckernant1.lolapi.leagues
 
+import com.github.mckernant1.lolapi.ClientBaseTest
 import org.junit.Test
 
 
-internal class LeagueClientTest {
+internal class LeagueClientTest : ClientBaseTest() {
+
+    private val leagueClient = LeagueClient(noCacheEsportsApiConfig)
 
     @Test
     fun getLeagues() {
-        val leagueClient = LeagueClient()
+
         val leagues = leagueClient.getLeagues()
         assert(leagues.isNotEmpty())
         leagueClient.close()
@@ -15,7 +18,6 @@ internal class LeagueClientTest {
 
     @Test
     fun getLeagueByName() {
-        val leagueClient = LeagueClient()
         assert(leagueClient.getLeagueByName("LCS").id == "98767991299243165")
         leagueClient.close()
     }
