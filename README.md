@@ -60,7 +60,7 @@ endpointHost: the host of the API to reach out to. Different clients use differe
 
 languageCode: the language code ENUM of the language you want. Enum is [here](https://github.com/mckernant1/LolEsportsApiWrapper/blob/master/src/main/kotlin/com/github/mckernant1/lolapi/config/LanguageCode.kt)
 
-logger: Specify a PrintStream for the config. Default is null
+logger: Specify a PrintStream for the config. Default is null. Can input System.out or System.err
 
 cacheConfig: Specify Caching properties for the httpClient
 
