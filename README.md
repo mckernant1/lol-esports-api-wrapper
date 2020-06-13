@@ -53,9 +53,23 @@ val split = rawEsportsApiHttpClient.get(
 )
 ```
 
-You can give any client a Config Object to change the Language. It defaults to `LanguageCode.EN_US`
+### Configuration
+You can alter the settings of the httpClient via this config object
+
+endpointHost: the host of the API to reach out to. Different clients use different endpoints
+
+languageCode: the language code ENUM of the language you want. Enum is [here](https://github.com/mckernant1/LolEsportsApiWrapper/blob/master/src/main/kotlin/com/github/mckernant1/lolapi/config/LanguageCode.kt)
+
+logger: Specify a PrintStream for the config. Default is null
+
+cacheConfig: Specify Caching properties for the httpClient
 
 ```kotlin
-val esportsApiConfig = EsportsApiConfig(LanguageCode.EN_GB)
-val rawEsportsApiHttpClient = RawEsportsApiHttpClient(esportsApiConfig)
+
+data class EsportsApiConfig(
+    val endpointHost: String = "esports-api.lolesports.com/persisted/gw/",
+    val languageCode: LanguageCode = LanguageCode.EN_US,
+    val logger: PrintStream = PrintStream(NullOutputStream()),
+    val cacheConfig: CacheConfig? = CacheConfig.DEFAULT
+)
 ```
