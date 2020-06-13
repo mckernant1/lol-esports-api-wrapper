@@ -14,7 +14,7 @@ plugins {
 }
 
 group = "com.github.mckernant1"
-version = "0.1.1"
+version = "0.1.2"
 
 repositories {
     mavenCentral()
@@ -25,6 +25,7 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.0")
     implementation("org.apache.httpcomponents:httpclient:4.5.12")
+    implementation("org.apache.httpcomponents:httpclient-cache:4.5.12")
     implementation("com.beust:klaxon:5.0.1")
     testImplementation("junit:junit:4.12")
 }

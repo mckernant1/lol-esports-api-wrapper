@@ -7,7 +7,7 @@ import com.github.mckernant1.lolapi.config.EsportsApiConfig
 import com.github.mckernant1.lolapi.tournaments.Tournament
 import com.github.mckernant1.lolapi.tournaments.TournamentClient
 import java.io.StringReader
-import java.sql.Date
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -28,18 +28,19 @@ class ScheduleClient(
         )
         val json: JsonObject = parser.parseJsonObject(StringReader(split))
         val tourney = getTourneyForSplit(leagueId, splitYear, splitNumber)
-        val startDate = Date.valueOf(tourney.startDate)
-        val endDate = Date.valueOf(tourney.endDate)
+        val formatter = SimpleDateFormat("yyyy-MM-dd")
+        val startDate = formatter.parse(tourney.startDate)
+        val endDate = formatter.parse(tourney.endDate)
         var matches = parseMatches(json).filter {
             it.date > startDate &&
                     it.date < endDate
         }.toMutableList()
         var prevJson = json
         while (matches.find { it.date < startDate } == null) {
-            val prevPageToken = prevJson.obj("data")
+            val prevPageToken = (prevJson.obj("data")
                 ?.obj("schedule")
                 ?.obj("pages")
-                ?.string("older") ?: break
+                ?.string("older") ?: break)
             val prevPage = super.get(
                 "getSchedule",
                 listOf(
@@ -91,9 +92,16 @@ class ScheduleClient(
             ?.obj("schedule")
             ?.array<JsonObject>("events")
             ?.mapChildrenObjectsOnly { event ->
-                val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
-                formatter.timeZone = TimeZone.getTimeZone("UTC")
-                val date = formatter.parse(event.string("startTime"))
+                lateinit var date: Date
+                try {
+                    val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+                    formatter.timeZone = TimeZone.getTimeZone("UTC")
+                    date = formatter.parse(event.string("startTime"))
+                } catch (e: ParseException) {
+                    val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+                    formatter.timeZone = TimeZone.getTimeZone("UTC")
+                    date = formatter.parse(event.string("startTime"))
+                }
                 val matches = event.obj("match")
                 val matchId = matches?.string("id")
                 val teams = matches

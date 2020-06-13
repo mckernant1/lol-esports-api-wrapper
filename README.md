@@ -22,7 +22,7 @@ repositories {
 ...
 dependencies {
     ...
-    implementation("com.github.mckernant1:lol-esports-api-wrapper:0.1.0")
+    implementation("com.github.mckernant1:lol-esports-api-wrapper:0.1.2")
 }
 ```
 
