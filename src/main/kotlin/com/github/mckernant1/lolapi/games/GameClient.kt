@@ -57,6 +57,12 @@ class GameClient(
         return parser.parseFromJsonArray<DetailFrame>(detailJson.array<JsonObject>("frames")!!)!!
     }
 
+
+    //TODO
+    fun getTotalGameStats(gameId: String, startingTime: Date? = null, participantIds: List<Int> = listOf()) {
+
+    }
+
     companion object {
         private val parser = Klaxon()
     }
