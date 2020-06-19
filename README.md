@@ -1,8 +1,11 @@
 # Lol Esports API Wrapper
-![Publish package to the Maven Central Repository](https://github.com/mckernant1/LolEsportsApiWrapper/workflows/Publish%20package%20to%20the%20Maven%20Central%20Repository/badge.svg)
+
 
 
 [![Code Coverage](https://codecov.io/gh/mckernant1/LolEsportsApiWrapper/branch/master/graph/badge.svg)](https://codecov.io/gh/mckernant1/LolEsportsApiWrapper)
+
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.mckernant1/lol-esports-api-wrapper/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.mckernant1/lol-esports-api-wrapper)
 
 This is a work in progress!
 
