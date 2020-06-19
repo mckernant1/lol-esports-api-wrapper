@@ -65,7 +65,6 @@ logger: Specify a PrintStream for the config. Default is null. Can input System.
 cacheConfig: Specify Caching properties for the httpClient
 
 ```kotlin
-
 data class EsportsApiConfig(
     val endpointHost: String = "esports-api.lolesports.com/persisted/gw/",
     val languageCode: LanguageCode = LanguageCode.EN_US,
