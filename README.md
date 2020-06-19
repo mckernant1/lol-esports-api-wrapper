@@ -1,6 +1,6 @@
 # Lol Esports API Wrapper
 
-
+![Build](https://github.com/mckernant1/LolEsportsApiWrapper/workflows/Gradle%20Build/badge.svg)
 
 [![Code Coverage](https://codecov.io/gh/mckernant1/LolEsportsApiWrapper/branch/master/graph/badge.svg)](https://codecov.io/gh/mckernant1/LolEsportsApiWrapper)
 
