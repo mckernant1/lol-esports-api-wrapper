@@ -17,8 +17,21 @@ class GameClient(
      * The GameId can be gotten from the Match data structure in the ScheduleClient
      * @param gameId The Id of the game you want
      */
-    fun getGameStats(gameId: String): Game {
-        val gameString = super.get("window/$gameId")
+    fun getGameStats(
+        gameId: String,
+        startTime: LocalDateTime? = LocalDateTime.now().withSecond(0)
+    ): Game {
+
+        val params = mutableListOf<Pair<String, String>>()
+
+        if (startTime != null) {
+            params.add(Pair("startingTime", formatTimeToString(startTime)))
+        }
+
+        val gameString = super.get(
+            "window/$gameId",
+            params
+        )
 
         val gameJson = parser.parseJsonObject(StringReader(gameString))
         val gameData = parser.parseFromJsonObject<GameData>(gameJson.obj("gameMetadata")!!)!!
@@ -34,12 +47,14 @@ class GameClient(
      * @param participantIds The list of participant Ids. can be gotten from the Game Object
      * @return The list of DetailFrame will only return 100 results. Adjust the time to get different results
      */
-    fun getPlayerStats(gameId: String, startingTime: LocalDateTime? = LocalDateTime.now().withSecond(0), participantIds: List<Int> = listOf()): List<DetailFrame> {
+    fun getPlayerStats(
+        gameId: String,
+        startingTime: LocalDateTime? = LocalDateTime.now().withSecond(0),
+        participantIds: List<Int> = listOf()
+    ): List<DetailFrame> {
         val params = mutableListOf<Pair<String, String>>()
         if (startingTime != null) {
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
-                .withZone(ZoneId.of("UTC"))
-            params.add(Pair("startingTime", formatter.format(startingTime)))
+            params.add(Pair("startingTime", formatTimeToString(startingTime)))
         }
 
         var participantIdString = ""
@@ -57,6 +72,10 @@ class GameClient(
         val detailJson = parser.parseJsonObject(StringReader(detailString))
         return parser.parseFromJsonArray<DetailFrame>(detailJson.array<JsonObject>("frames")!!)!!
     }
+
+    private fun formatTimeToString(time: LocalDateTime): String =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'").withZone(ZoneId.of("UTC")).format(time)
+
 
     companion object {
         private val parser = Klaxon()
