@@ -25,3 +25,4 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./build/customJacocoReportDir/test/jacocoTestReport.xml
+          fail_ci_if_error: true
