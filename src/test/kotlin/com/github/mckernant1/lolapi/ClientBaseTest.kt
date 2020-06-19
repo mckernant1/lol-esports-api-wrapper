@@ -12,10 +12,10 @@ internal open class ClientBaseTest {
     @get:Rule
     val stopwatch = object : Stopwatch() {
         override fun succeeded(nanos: Long, description: Description?) =
-            println("$description succeeded taking ${TimeUnit.NANOSECONDS.toMillis(nanos)} milliseconds")
+            println("${description?.className}: ${description?.methodName} succeeded taking ${TimeUnit.NANOSECONDS.toMillis(nanos)} milliseconds")
     }
 
-    protected val cacheConfig = CacheConfig.custom()
+    protected val cacheConfig: CacheConfig = CacheConfig.custom()
         .setNeverCacheHTTP10ResponsesWithQueryString(true)
         .setMaxCacheEntries(0)
         .setMaxObjectSize(0)
