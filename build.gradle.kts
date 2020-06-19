@@ -8,6 +8,7 @@ plugins {
     `maven-publish`
     `java-library`
     signing
+    jacoco
     kotlin("jvm") version "1.3.72"
     id("org.jetbrains.dokka") version "0.10.1"
     id("name.remal.maven-publish-ossrh") version "1.0.192"
@@ -41,6 +42,23 @@ tasks {
         outputFormat = "html"
         outputDirectory = "$buildDir/javadoc"
     }
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport)
+}
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.isEnabled = false
+        csv.isEnabled = false
+        html.destination = file("${buildDir}/jacocoHtml")
+    }
+}
+
+jacoco {
+    toolVersion = "0.8.5"
+    reportsDir = file("$buildDir/customJacocoReportDir")
 }
 
 val dokkaJar by tasks.creating(Jar::class) {
