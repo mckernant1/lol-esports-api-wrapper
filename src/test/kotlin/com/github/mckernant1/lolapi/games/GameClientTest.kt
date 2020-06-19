@@ -3,7 +3,6 @@ package com.github.mckernant1.lolapi.games
 import com.github.mckernant1.lolapi.ClientBaseTest
 import com.github.mckernant1.lolapi.config.EsportsApiConfig
 import org.junit.Test
-import java.text.SimpleDateFormat
 
 
 internal class GameClientTest : ClientBaseTest() {
@@ -25,8 +24,7 @@ internal class GameClientTest : ClientBaseTest() {
     fun getPlayerStats() {
         val playerStats = gameClient.getPlayerStats(
             "102147201352179016",
-            participantIds = listOf(1, 2),
-            startingTime = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX").parse("2019-08-11T19:07:50Z")
+            participantIds = listOf(1, 2)
         )
         assert(playerStats.isNotEmpty())
     }

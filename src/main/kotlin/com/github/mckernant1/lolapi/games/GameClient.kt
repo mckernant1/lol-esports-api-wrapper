@@ -5,8 +5,9 @@ import com.beust.klaxon.Klaxon
 import com.github.mckernant1.lolapi.EsportsApiHttpClient
 import com.github.mckernant1.lolapi.config.EsportsApiConfig
 import java.io.StringReader
-import java.text.SimpleDateFormat
-import java.util.*
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 class GameClient(
     esportsApiConfig: EsportsApiConfig = EsportsApiConfig(endpointHost = "feed.lolesports.com/livestats/v1/")
@@ -29,15 +30,15 @@ class GameClient(
     /**
      * The GameId can be gotten from the Match data structure in the ScheduleClient
      * @param gameId The Id of the game you want
-     * @param startingTime The starting time of the data. Your seconds need to be divisible 10
+     * @param startingTime The starting time of the data. Your seconds need to be divisible 10. In order to get endGame stats we default to LocalDateTime.now()
      * @param participantIds The list of participant Ids. can be gotten from the Game Object
      * @return The list of DetailFrame will only return 100 results. Adjust the time to get different results
      */
-    fun getPlayerStats(gameId: String, startingTime: Date? = null, participantIds: List<Int> = listOf()): List<DetailFrame> {
+    fun getPlayerStats(gameId: String, startingTime: LocalDateTime? = LocalDateTime.now().withSecond(0), participantIds: List<Int> = listOf()): List<DetailFrame> {
         val params = mutableListOf<Pair<String, String>>()
         if (startingTime != null) {
-            val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
-            formatter.timeZone = TimeZone.getTimeZone("UTC")
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+                .withZone(ZoneId.of("UTC"))
             params.add(Pair("startingTime", formatter.format(startingTime)))
         }
 

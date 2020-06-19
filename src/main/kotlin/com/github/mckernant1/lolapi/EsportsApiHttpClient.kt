@@ -58,12 +58,13 @@ open class EsportsApiHttpClient(
             }
         )
 
-        if (res.statusLine.statusCode != HttpStatus.SC_OK) {
-            throw HttpException("Request failed with message ${res.entity}")
-        }
-
         val body = EntityUtils.toString(res.entity)
             ?: throw Exception("Request Failed with URI ${fullURI.toASCIIString()}")
+
+        if (res.statusLine.statusCode != HttpStatus.SC_OK) {
+            throw HttpException("Request failed with message: $body")
+        }
+
         res.close()
         return body
     }
