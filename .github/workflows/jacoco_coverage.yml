@@ -17,8 +17,11 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: Publish package
+        run: ./gradlew build jacocoTestReport
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Upload coverage to Codecov  
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./build/customJacocoReportDir/test/jacocoTestReport.xml
