@@ -21,7 +21,7 @@ class ScheduleClient(
      * @param splitYear The year of the split
      * @param splitNumber The number of the split (1 Spring, 2 Summer)
      */
-    fun getSplit(leagueId: String, splitYear: Int, splitNumber: Int): Split {
+    fun getSplit(leagueId: String, splitYear: Int, splitNumber: Int? = null): Split {
         val split = super.get(
                 "getSchedule",
                 listOf(
@@ -66,15 +66,21 @@ class ScheduleClient(
     /*
      * Helper method to get a tournament for a specific split
      */
-    private fun getTourneyForSplit(leagueId: String, splitYear: Int, splitNumber: Int): Tournament {
+    private fun getTourneyForSplit(leagueId: String, splitYear: Int, splitNumber: Int? = null): Tournament {
         val tournamentClient = TournamentClient()
         val slugTest = mutableListOf<String>()
-        if (splitNumber == 1) {
-            slugTest.add("spring")
-            slugTest.add("split1")
-        } else if (splitNumber == 2) {
-            slugTest.add("summer")
-            slugTest.add("split2")
+        when (splitNumber) {
+            1 -> {
+                slugTest.add("spring")
+                slugTest.add("split1")
+            }
+            2 -> {
+                slugTest.add("summer")
+                slugTest.add("split2")
+            }
+            null -> {
+                slugTest.add("")
+            }
         }
 
         return tournamentClient.getTournamentsForLeague(leagueId).find {
