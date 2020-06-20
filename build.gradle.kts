@@ -54,6 +54,11 @@ tasks.jacocoTestReport {
         csv.isEnabled = true
         html.destination = file("${buildDir}/jacocoHtml")
     }
+    classDirectories.setFrom(
+        sourceSets.main.get().output.asFileTree.matching {
+            include("**/*Client*")
+        }
+    )
 }
 
 jacoco {

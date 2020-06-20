@@ -32,8 +32,7 @@ class LeagueClient(
      */
     fun getLeagueByName(name: String): League {
         return getLeagues().find {
-            it.name.replace(" ", "")
-                .contains(name.replace(" ", ""))
+            it.name.replace(" ", "").contains(name.replace(" ", ""), ignoreCase = true)
         } ?: throw NoSuchFieldException("There is no league with name '$name'")
     }
 
@@ -45,7 +44,7 @@ class LeagueClient(
     fun getLeagueBySlug(slug: String): League {
         return getLeagues().find {
             it.slug.replace(Regex("[-_ ]"), "")
-                .contains(slug.replace(Regex("[-_ ]"), ""))
+                .contains(slug.replace(Regex("[-_ ]"), ""), ignoreCase = true)
         } ?: throw NoSuchFieldException("There is no league with name '$slug'")
     }
 

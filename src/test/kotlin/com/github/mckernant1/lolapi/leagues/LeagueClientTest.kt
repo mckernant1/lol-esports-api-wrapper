@@ -18,4 +18,9 @@ internal class LeagueClientTest : ClientBaseTest() {
     fun getLeagueByName() {
         assert(leagueClient.getLeagueByName("LCS").id == "98767991299243165")
     }
+
+    @Test
+    fun getLeagueBySlug() {
+        assert(leagueClient.getLeagueBySlug("LCS").id == "98767991299243165")
+    }
 }
