@@ -11,12 +11,11 @@ internal class LeagueClientTest : ClientBaseTest() {
     @Test
     fun getLeagues() {
         val leagues = leagueClient.getLeagues()
-        assert(leagues == leaguesData)
+        assert(leagues.isNotEmpty())
     }
 
     @Test
     fun getLeagueByName() {
-        val lcs = leagueClient.getLeagueByName("LCS")
-        assert(lcs == lcsData)
+        assert(leagueClient.getLeagueByName("LCS").id == "98767991299243165")
     }
 }
