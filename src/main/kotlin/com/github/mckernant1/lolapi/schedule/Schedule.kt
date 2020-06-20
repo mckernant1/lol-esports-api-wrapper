@@ -8,7 +8,8 @@ import java.util.*
 enum class MatchType(val numberOfGames: Int) {
     BO1(1),
     BO3(3),
-    BO5(5)
+    BO5(5),
+    UNKNOWN(0)
 }
 
 /**

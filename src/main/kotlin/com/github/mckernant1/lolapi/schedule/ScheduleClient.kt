@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ScheduleClient(
-        esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
+        val esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
 ) : EsportsApiHttpClient(esportsApiConfig) {
     /**
      * @param leagueId The Id of the league gotten from the leagueClient
@@ -97,19 +97,19 @@ class ScheduleClient(
     private fun parseMatches(json: JsonObject): List<Match> {
         return runBlocking {
             return@runBlocking json
-                    .obj("data")
-                    ?.obj("schedule")
-                    ?.array<JsonObject>("events")
-                    ?.mapChildrenObjectsOnly { event: JsonObject ->
-                        async { eventToMatch(event) }
-                    }!!.map { it.await() }.toList()
+                .obj("data")
+                ?.obj("schedule")
+                ?.array<JsonObject>("events")
+                ?.mapChildrenObjectsOnly { event: JsonObject ->
+                    async { eventToMatch(event) }
+                }!!.mapNotNull { it.await() }.toList()
         }
     }
 
     /*
      * Async method to parse an event to a match. Also retrieves the gameIds
      */
-    private suspend fun eventToMatch(event: JsonObject): Match {
+    private suspend fun eventToMatch(event: JsonObject): Match? {
         lateinit var date: Date
         try {
             val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
@@ -120,10 +120,11 @@ class ScheduleClient(
             formatter.timeZone = TimeZone.getTimeZone("UTC")
             date = formatter.parse(event.string("startTime"))
         }
-        val matches = event.obj("match")
-        val matchId = matches?.string("id")
+        val matches = event.obj("match") ?: return null
+
+        val matchId = matches.string("id")
         val teams = matches
-                ?.array<JsonObject>("teams")
+            .array<JsonObject>("teams")
         val team1 = teams?.get(0)?.string("name")
         val team2 = teams?.get(1)?.string("name")
 
@@ -141,7 +142,7 @@ class ScheduleClient(
         }
 
         val bestOfVar = matches
-                ?.obj("strategy")
+            .obj("strategy")
                 ?.int("count")
 
         val matchType: MatchType = when (bestOfVar) {
