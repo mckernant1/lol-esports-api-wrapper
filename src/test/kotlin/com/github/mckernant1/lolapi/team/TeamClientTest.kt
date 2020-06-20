@@ -16,7 +16,7 @@ internal class TeamClientTest : ClientBaseTest() {
     @Test
     fun getTeamBySlug() {
         val cloud9 = teamClient.getTeamBySlug("cloud9")
-        assert(cloud9.slug == "cloud9")
+        assert(cloud9 == cloud9Data)
     }
 
     @Test

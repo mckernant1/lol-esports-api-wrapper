@@ -17,7 +17,8 @@ internal class GameClientTest : ClientBaseTest() {
     @Test
     fun getGameFrames() {
         val game = gameClient.getGameStats("102147201352179016")
-        assert(game.frames.isNotEmpty())
+        assert(game.frames == frames)
+        assert(game.data == gameData)
     }
 
     @Test
@@ -26,6 +27,6 @@ internal class GameClientTest : ClientBaseTest() {
             "102147201352179016",
             participantIds = listOf(1, 2)
         )
-        assert(playerStats.isNotEmpty())
+        assert(playerStats == playerStatsData)
     }
 }

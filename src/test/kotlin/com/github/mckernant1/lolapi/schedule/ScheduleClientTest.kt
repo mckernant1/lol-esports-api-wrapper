@@ -14,13 +14,7 @@ internal class ScheduleClientTest : ClientBaseTest() {
             2020,
             2
         )
-        assert(
-            split.matches.isNotEmpty()
-        )
-
-        assert(
-            split.matches.fold(true) {acc: Boolean, match: Match -> acc && match.gameIds.size == match.type.numberOfGames }
-        )
+        assert(split.matches.isNotEmpty())
         scheduleClient.close()
     }
 

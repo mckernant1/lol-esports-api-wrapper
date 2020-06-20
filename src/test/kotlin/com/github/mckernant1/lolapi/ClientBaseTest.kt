@@ -1,5 +1,6 @@
 package com.github.mckernant1.lolapi
 
+import com.beust.klaxon.Klaxon
 import com.github.mckernant1.lolapi.config.EsportsApiConfig
 import org.apache.http.impl.client.cache.CacheConfig
 import org.junit.Rule
@@ -21,4 +22,6 @@ internal open class ClientBaseTest {
         .setMaxObjectSize(0)
         .build()
     protected open val noCacheEsportsApiConfig = EsportsApiConfig(cacheConfig = cacheConfig)
+
+    protected val parser = Klaxon()
 }

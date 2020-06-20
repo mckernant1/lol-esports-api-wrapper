@@ -10,12 +10,8 @@ internal class TournamentClientTest : ClientBaseTest() {
 
     @Test
     fun getTournamentsForLeague() {
-
-        assert(
-            tournamentClient
-                .getTournamentsForLeague("98767991299243165")
-                .isNotEmpty()
-        )
+        val tournaments = tournamentClient.getTournamentsForLeague("98767991299243165")
+        assert(tournaments == tournamentData)
         tournamentClient.close()
     }
 }
