@@ -14,13 +14,14 @@ internal class ScheduleClientTest : ClientBaseTest() {
             2020,
             2
         )
-        assert(
-            split.matches.isNotEmpty()
-        )
+        assert(split.matches.isNotEmpty())
 
-        assert(
-            split.matches.fold(true) {acc: Boolean, match: Match -> acc && match.gameIds.size == match.type.numberOfGames }
-        )
+        assert(split.matches.fold(true) {acc: Boolean, match: Match -> acc && match.gameIds.size == match.type.numberOfGames })
+
+        val worlds = scheduleClient.getSplit("98767975604431411", 2019)
+
+        assert(worlds.matches.isNotEmpty())
+
         scheduleClient.close()
     }
 
