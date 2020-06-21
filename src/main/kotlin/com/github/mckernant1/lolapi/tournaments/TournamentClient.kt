@@ -5,6 +5,7 @@ import com.beust.klaxon.Klaxon
 import com.beust.klaxon.KlaxonException
 import com.github.mckernant1.lolapi.EsportsApiHttpClient
 import com.github.mckernant1.lolapi.config.EsportsApiConfig
+import com.github.mckernant1.lolapi.schedule.ScheduleClient
 import java.io.StringReader
 
 class TournamentClient(
@@ -29,7 +30,24 @@ class TournamentClient(
             }?.toList() ?: throw KlaxonException("Json parsing failed for result: $res")
     }
 
+    fun getStandingsForLeague(leagueId: String, splitYear: Int, splitNumber: Int? = null): List<Standing> {
+        val split = scheduleClient.getSplit(leagueId, splitYear, splitNumber)
+        val teams = mutableSetOf<String>()
+
+        split.matches.forEach {
+            teams.add(it.team1)
+            teams.add(it.team2)
+        }
+
+        return teams.map {
+            Standing(it,
+                split.matches.count { match -> it == match.winner },
+                split.matches.count { match -> (match.team1 == it || match.team2 == it) && it != match.winner && match.winner != "TBD"})
+        }.also { println(it) }
+    }
+
     companion object {
         private val parser = Klaxon()
+        private val scheduleClient = ScheduleClient()
     }
 }

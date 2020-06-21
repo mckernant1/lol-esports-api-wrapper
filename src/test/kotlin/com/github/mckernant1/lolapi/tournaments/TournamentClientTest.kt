@@ -18,4 +18,13 @@ internal class TournamentClientTest : ClientBaseTest() {
         )
         tournamentClient.close()
     }
+
+    @Test
+    fun getStandingsForLeague() {
+        val standings = tournamentClient.getStandingsForLeague("98767991299243165",
+            2020,
+            2
+        )
+        assert(standings.isNotEmpty())
+    }
 }
