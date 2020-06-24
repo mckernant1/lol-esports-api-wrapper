@@ -27,4 +27,14 @@ internal class TournamentClientTest : ClientBaseTest() {
         )
         assert(standings.isNotEmpty())
     }
+
+    @Test
+    fun getStandingsForLeagueByName() {
+        val standings = tournamentClient.getStandingsForLeagueByName(
+            "LCS",
+            2020,
+            2
+        )
+        assert(standings.isNotEmpty())
+    }
 }

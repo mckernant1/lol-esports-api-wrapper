@@ -6,6 +6,7 @@ import com.beust.klaxon.KlaxonException
 import com.github.mckernant1.lolapi.EsportsApiHttpClient
 import com.github.mckernant1.lolapi.config.EsportsApiConfig
 import com.github.mckernant1.lolapi.schedule.ScheduleClient
+import com.github.mckernant1.lolapi.leagues.LeagueClient
 import java.io.StringReader
 
 class TournamentClient(
@@ -44,6 +45,12 @@ class TournamentClient(
                 split.matches.count { match -> it == match.winner },
                 split.matches.count { match -> (match.team1 == it || match.team2 == it) && it != match.winner && match.winner != "TBD"})
         }.also { println(it) }
+    }
+
+    fun getStandingsForLeagueByName(leagueName: String, splitYear: Int, splitNumber: Int? = null): List<Standing>  {
+        val leagueClient = LeagueClient()
+        val leagueId = leagueClient.getLeagueByName(leagueName).id
+        return getStandingsForLeague(leagueId, splitYear, splitNumber)
     }
 
     companion object {
