@@ -50,7 +50,6 @@ class TournamentClient(
     fun getStandingsForLeagueByName(leagueName: String, splitYear: Int, splitNumber: Int? = null): List<Standing>  {
         val leagueClient = LeagueClient()
         val leagueId = leagueClient.getLeagueByName(leagueName).id
-        print(leagueId)
         return getStandingsForLeague(leagueId, splitYear, splitNumber)
     }
 
