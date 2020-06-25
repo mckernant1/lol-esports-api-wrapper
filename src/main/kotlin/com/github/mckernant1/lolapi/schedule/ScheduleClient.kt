@@ -16,12 +16,22 @@ import java.util.*
 class ScheduleClient(
         val esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
 ) : EsportsApiHttpClient(esportsApiConfig) {
+
     /**
      * @param leagueId The Id of the league gotten from the leagueClient
      * @param splitYear The year of the split
      * @param splitNumber The number of the split (1 Spring, 2 Summer)
      */
-    fun getSplit(leagueId: String, splitYear: Int, splitNumber: Int? = null): Split {
+    fun getSplitByYearAndNumber(leagueId: String, splitYear: Int, splitNumber: Int? = null): Split {
+        return getSplitByTournament(leagueId, getTourneyForSplit(leagueId, splitYear, splitNumber))
+    }
+
+    /**
+     * @param leagueId The Id of the league gotten from the leagueClient
+     * @param tourney The tournament gotten from the TournamentClient
+     * @return The split
+     */
+    fun getSplitByTournament(leagueId: String, tourney: Tournament): Split {
         val split = super.get(
                 "getSchedule",
                 listOf(
@@ -29,7 +39,6 @@ class ScheduleClient(
                 )
         )
         val json: JsonObject = parser.parseJsonObject(StringReader(split))
-        val tourney = getTourneyForSplit(leagueId, splitYear, splitNumber)
         val formatter = SimpleDateFormat("yyyy-MM-dd")
         val startDate = formatter.parse(tourney.startDate)
         val endDate = formatter.parse(tourney.endDate)

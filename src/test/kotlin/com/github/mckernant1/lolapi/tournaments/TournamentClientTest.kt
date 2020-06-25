@@ -10,13 +10,11 @@ internal class TournamentClientTest : ClientBaseTest() {
 
     @Test
     fun getTournamentsForLeague() {
-
         assert(
             tournamentClient
                 .getTournamentsForLeague("98767991299243165")
                 .isNotEmpty()
         )
-        tournamentClient.close()
     }
 
     @Test
@@ -26,6 +24,13 @@ internal class TournamentClientTest : ClientBaseTest() {
             2
         )
         assert(standings.isNotEmpty())
+    }
+
+    @Test
+    fun getMostRecentTournament() {
+        val tournament = tournamentClient.getMostRecentTournament("98767991299243165")
+        println(tournament)
+        assert(tournament.slug.contains("lcs", ignoreCase = true))
     }
 
     @Test

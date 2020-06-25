@@ -5,16 +5,27 @@ import com.beust.klaxon.Klaxon
 import com.beust.klaxon.KlaxonException
 import com.github.mckernant1.lolapi.EsportsApiHttpClient
 import com.github.mckernant1.lolapi.config.EsportsApiConfig
-import com.github.mckernant1.lolapi.schedule.ScheduleClient
 import com.github.mckernant1.lolapi.leagues.LeagueClient
+import com.github.mckernant1.lolapi.schedule.ScheduleClient
 import java.io.StringReader
 
 class TournamentClient(
     esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
 ) : EsportsApiHttpClient(esportsApiConfig) {
 
+
+    /**
+     * @param leagueId league Id gotten from leagueClient
+     * @return the most recent tournament. Includes ongoing tournaments
+     */
+    fun getMostRecentTournament(leagueId: String): Tournament {
+        return getTournamentsForLeague(leagueId).maxBy { it.startDate } ?:
+                throw NullPointerException("No tournaments in this league")
+    }
+
     /**
      * TOURNAMENTS INCLUDE SPLITS + PLAYOFFS
+     * @param leagueId league Id gotten from leagueClient
      * @return Returns a list of all the tournaments for a specific league
      */
     fun getTournamentsForLeague(leagueId: String): List<Tournament> {
@@ -32,7 +43,7 @@ class TournamentClient(
     }
 
     fun getStandingsForLeague(leagueId: String, splitYear: Int, splitNumber: Int? = null): List<Standing> {
-        val split = scheduleClient.getSplit(leagueId, splitYear, splitNumber)
+        val split = scheduleClient.getSplitByYearAndNumber(leagueId, splitYear, splitNumber)
         val teams = mutableSetOf<String>()
 
         split.matches.forEach {
