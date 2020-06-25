@@ -9,7 +9,7 @@ internal class ScheduleClientTest : ClientBaseTest() {
 
     @Test
     fun getSplit() {
-        val split = scheduleClient.getSplit(
+        val split = scheduleClient.getSplitByYearAndNumber(
             "98767991299243165",
             2020,
             2
@@ -18,11 +18,12 @@ internal class ScheduleClientTest : ClientBaseTest() {
 
         assert(split.matches.fold(true) {acc: Boolean, match: Match -> acc && match.gameIds.size == match.type.numberOfGames })
 
-        val worlds = scheduleClient.getSplit("98767975604431411", 2019)
+        val worlds = scheduleClient.getSplitByYearAndNumber("98767975604431411", 2019)
 
         assert(worlds.matches.isNotEmpty())
 
         scheduleClient.close()
     }
+
 
 }
