@@ -37,8 +37,7 @@ internal class TournamentClientTest : ClientBaseTest() {
     fun getStandingsForLeagueByName() {
         val standings = tournamentClient.getStandingsForLeagueByName(
             "LCS",
-            2020,
-            2
+            2020
         )
         assert(standings.isNotEmpty())
     }

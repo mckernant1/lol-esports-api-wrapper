@@ -77,8 +77,9 @@ class ScheduleClient(
      */
     private fun getTourneyForSplit(leagueId: String, splitYear: Int, splitNumber: Int? = null): Tournament {
         val tournamentClient = TournamentClient()
+        val splitNumberTmp = splitNumber ?: getCurrentSplitNumber()
         val slugTest = mutableListOf<String>()
-        when (splitNumber) {
+        when (splitNumberTmp) {
             1 -> {
                 slugTest.add("spring")
                 slugTest.add("split1")
@@ -87,17 +88,21 @@ class ScheduleClient(
                 slugTest.add("summer")
                 slugTest.add("split2")
             }
-            null -> {
-                slugTest.add("")
-            }
         }
-
-        return tournamentClient.getTournamentsForLeague(leagueId).find {
+        val tourneys = tournamentClient.getTournamentsForLeague(leagueId)
+        return tourneys.find {
             return@find it.slug.contains(splitYear.toString())
                     && slugTest.fold(false) { acc, s ->
                 acc || it.slug.contains(s)
             }
+        } ?: tourneys.find {
+            return@find it.slug.contains(splitYear.toString())
         } ?: throw NoSuchFieldError("No tournament found for $leagueId, $splitYear, $splitNumber")
+    }
+
+    private fun getCurrentSplitNumber(): Int {
+        val month = Calendar.getInstance().get(Calendar.MONTH) + 1
+        return if (month in 1..6) 1 else 2
     }
 
     /*
