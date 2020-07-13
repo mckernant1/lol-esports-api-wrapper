@@ -20,5 +20,8 @@ internal open class ClientBaseTest {
         .setMaxCacheEntries(0)
         .setMaxObjectSize(0)
         .build()
-    protected open val noCacheEsportsApiConfig = EsportsApiConfig(cacheConfig = cacheConfig)
+    protected open val noCacheEsportsApiConfig = EsportsApiConfig(
+        cacheConfig = cacheConfig,
+        logger = System.out
+    )
 }

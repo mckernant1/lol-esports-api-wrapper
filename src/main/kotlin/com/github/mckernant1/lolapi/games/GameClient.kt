@@ -4,13 +4,14 @@ import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon
 import com.github.mckernant1.lolapi.EsportsApiHttpClient
 import com.github.mckernant1.lolapi.config.EsportsApiConfig
+import com.github.mckernant1.lolapi.config.HostUrl
 import java.io.StringReader
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 class GameClient(
-    esportsApiConfig: EsportsApiConfig = EsportsApiConfig(endpointHost = "feed.lolesports.com/livestats/v1/")
+    esportsApiConfig: EsportsApiConfig = EsportsApiConfig(endpointHost = HostUrl.LIVE_STATS_API)
 ) : EsportsApiHttpClient(esportsApiConfig) {
 
     /**

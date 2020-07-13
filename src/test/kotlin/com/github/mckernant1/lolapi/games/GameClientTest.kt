@@ -2,6 +2,7 @@ package com.github.mckernant1.lolapi.games
 
 import com.github.mckernant1.lolapi.ClientBaseTest
 import com.github.mckernant1.lolapi.config.EsportsApiConfig
+import com.github.mckernant1.lolapi.config.HostUrl
 import org.junit.Test
 
 
@@ -9,7 +10,7 @@ internal class GameClientTest : ClientBaseTest() {
 
     override val noCacheEsportsApiConfig = EsportsApiConfig(
         cacheConfig = cacheConfig,
-        endpointHost = "feed.lolesports.com/livestats/v1/"
+        endpointHost = HostUrl.LIVE_STATS_API
     )
 
     private val gameClient = GameClient(noCacheEsportsApiConfig)

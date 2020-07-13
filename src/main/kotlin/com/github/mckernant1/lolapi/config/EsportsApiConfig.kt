@@ -11,7 +11,7 @@ import java.io.PrintStream
  * @param cacheConfig Specify Caching properties for the httpClient
  */
 data class EsportsApiConfig(
-    val endpointHost: String = "prod-relapi.ewp.gg/persisted/gw/",
+    val endpointHost: HostUrl = HostUrl.ESPORTS_API_1,
     val languageCode: LanguageCode = LanguageCode.EN_US,
     val logger: PrintStream = PrintStream(NullOutputStream()),
     val cacheConfig: CacheConfig? = CacheConfig.DEFAULT

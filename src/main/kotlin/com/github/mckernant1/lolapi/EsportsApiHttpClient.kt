@@ -38,7 +38,7 @@ open class EsportsApiHttpClient(
         val context = HttpCacheContext.create()
         val someURI = URIBuilder()
             .setScheme("https")
-            .setHost(esportsApiConfig.endpointHost)
+            .setHost(esportsApiConfig.endpointHost.hostname)
             .setParameter("hl", esportsApiConfig.languageCode.code)
         someURI.path = path
         params.forEach { (key, value) ->
