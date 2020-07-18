@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ScheduleClient(
-        val esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
+    val esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
 ) : EsportsApiHttpClient(esportsApiConfig) {
 
     /**
@@ -33,10 +33,10 @@ class ScheduleClient(
      */
     fun getSplitByTournament(leagueId: String, tourney: Tournament): Split {
         val split = super.get(
-                "getSchedule",
-                listOf(
-                        Pair("leagueId", leagueId)
-                )
+            "getSchedule",
+            listOf(
+                Pair("leagueId", leagueId)
+            )
         )
         val json: JsonObject = parser.parseJsonObject(StringReader(split))
         val formatter = SimpleDateFormat("yyyy-MM-dd")
@@ -49,15 +49,15 @@ class ScheduleClient(
         var prevJson = json
         while (matches.find { it.date < startDate } == null) {
             val prevPageToken = (prevJson.obj("data")
-                    ?.obj("schedule")
-                    ?.obj("pages")
-                    ?.string("older") ?: break)
+                ?.obj("schedule")
+                ?.obj("pages")
+                ?.string("older") ?: break)
             val prevPage = super.get(
-                    "getSchedule",
-                    listOf(
-                            Pair("leagueId", leagueId),
-                            Pair("pageToken", prevPageToken)
-                    )
+                "getSchedule",
+                listOf(
+                    Pair("leagueId", leagueId),
+                    Pair("pageToken", prevPageToken)
+                )
             )
             prevJson = parser.parseJsonObject(StringReader(prevPage))
             val newMatches = parseMatches(prevJson).filter {
@@ -142,22 +142,27 @@ class ScheduleClient(
         val team1 = teams?.get(0)?.string("name")
         val team2 = teams?.get(1)?.string("name")
 
+        val team1Results = teams?.get(0)
+            ?.obj("result")
+
+        val team2Results = teams?.get(1)
+            ?.obj("result")
+
+        val team1NumWins: Int = team1Results?.int("gameWins") ?: 0
+
+        val team2NumWins: Int = team2Results?.int("gameWins") ?: 0
+
         var winner: String? = null
-        if (teams?.get(0)
-                        ?.obj("result")
-                        ?.string("outcome") == "win"
-        ) {
+
+        if (team1Results?.string("outcome") == "win") {
             winner = team1
-        } else if (teams?.get(1)
-                        ?.obj("result")
-                        ?.string("outcome") == "win"
-        ) {
+        } else if (team2Results?.string("outcome") == "win") {
             winner = team2
         }
 
         val bestOfVar = matches
             .obj("strategy")
-                ?.int("count")
+            ?.int("count")
 
         val matchType: MatchType = when (bestOfVar) {
             1 -> MatchType.BO1
@@ -166,13 +171,15 @@ class ScheduleClient(
             else -> throw NumberFormatException("Best of must be 1, 3, or 5. Instead it was $bestOfVar")
         }
         return Match(
-                id = matchId!!,
-                gameIds = getGameIdsForMatchId(matchId),
-                team1 = team1!!,
-                team2 = team2!!,
-                type = matchType,
-                winner = winner ?: "TBD",
-                date = date
+            id = matchId!!,
+            gameIds = getGameIdsForMatchId(matchId),
+            team1 = team1!!,
+            team2 = team2!!,
+            team1NumWins = team1NumWins,
+            team2NumWins = team2NumWins,
+            type = matchType,
+            winner = winner ?: "TBD",
+            date = date
         )
     }
 
@@ -182,12 +189,12 @@ class ScheduleClient(
         val eventDetailsJson = parser.parseJsonObject(StringReader(eventDetails))
 
         return eventDetailsJson.obj("data")
-                ?.obj("event")
-                ?.obj("match")
-                ?.array<JsonObject>("games")
-                ?.mapChildrenObjectsOnly {
-                    it.string("id")!!
-                }!!.toList()
+            ?.obj("event")
+            ?.obj("match")
+            ?.array<JsonObject>("games")
+            ?.mapChildrenObjectsOnly {
+                it.string("id")!!
+            }!!.toList()
     }
 
     companion object {

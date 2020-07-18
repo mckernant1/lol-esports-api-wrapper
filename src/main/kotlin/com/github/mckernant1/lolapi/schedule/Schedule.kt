@@ -21,6 +21,8 @@ data class Match(
     val gameIds: List<String>,
     val winner: String,
     val type: MatchType,
+    val team1NumWins: Int,
+    val team2NumWins: Int,
     val team1: String,
     val team2: String,
     val date: Date

@@ -16,9 +16,8 @@ internal open class ClientBaseTest {
     }
 
     protected val cacheConfig: CacheConfig = CacheConfig.custom()
-        .setNeverCacheHTTP10ResponsesWithQueryString(true)
-        .setMaxCacheEntries(0)
-        .setMaxObjectSize(0)
+        .setMaxCacheEntries(1000)
+        .setMaxObjectSize(8192)
         .build()
     protected open val noCacheEsportsApiConfig = EsportsApiConfig(
         cacheConfig = cacheConfig,
