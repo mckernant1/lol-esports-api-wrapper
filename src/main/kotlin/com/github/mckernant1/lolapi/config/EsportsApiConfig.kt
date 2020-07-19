@@ -1,5 +1,6 @@
 package com.github.mckernant1.lolapi.config
 
+import com.github.mckernant1.lolapi.fstore.LocalFileStoreConfig
 import org.apache.http.impl.client.cache.CacheConfig
 import java.io.OutputStream
 import java.io.PrintStream
@@ -9,12 +10,14 @@ import java.io.PrintStream
  * @param languageCode the language code ENUM of the language you want
  * @param logger Specify a PrintStream for the config. Default is null
  * @param cacheConfig Specify Caching properties for the httpClient
+ * @param fileSystemStorageConfig Config for local file storage from API. null means disabled
  */
 data class EsportsApiConfig(
     val endpointHost: HostUrl = HostUrl.ESPORTS_API_1,
     val languageCode: LanguageCode = LanguageCode.EN_US,
     val logger: PrintStream = PrintStream(NullOutputStream()),
-    val cacheConfig: CacheConfig? = CacheConfig.DEFAULT
+    val cacheConfig: CacheConfig? = CacheConfig.DEFAULT,
+    val fileSystemStorageConfig: LocalFileStoreConfig? = null
 ) {
     init {
         this.println("Instantiating Config object with Options: host: '$endpointHost', language: '${languageCode.code}', logger: '$logger', cacheConfig: '$cacheConfig'")

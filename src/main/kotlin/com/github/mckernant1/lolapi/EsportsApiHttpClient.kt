@@ -1,6 +1,8 @@
 package com.github.mckernant1.lolapi
 
 import com.github.mckernant1.lolapi.config.EsportsApiConfig
+import com.github.mckernant1.lolapi.fstore.LocalFileStore
+import com.github.mckernant1.lolapi.fstore.LocalFileStoreConfig
 import org.apache.http.HttpException
 import org.apache.http.HttpRequest
 import org.apache.http.HttpStatus
@@ -30,6 +32,9 @@ open class EsportsApiHttpClient(
         }
         .build()
 
+    private val fileStoreConfig = esportsApiConfig.fileSystemStorageConfig
+
+    private val localFileStore = LocalFileStore(fileStoreConfig ?: LocalFileStoreConfig())
 
     protected fun get(
         path: String,
@@ -45,8 +50,19 @@ open class EsportsApiHttpClient(
             someURI.setParameter(key, value)
         }
         val fullURI = someURI.build()
+
+        if (fileStoreConfig != null) {
+            esportsApiConfig.println("Checking to see if the URL is stored in file storage")
+            val potentialResult = localFileStore.retrieve(fullURI.toASCIIString())
+            if (potentialResult != null) {
+                esportsApiConfig.println("The URL was stored in file storage. No need to call")
+                return potentialResult
+            }
+        }
+
         esportsApiConfig.println("Executing get request on URL: ${fullURI.toASCIIString()}")
         val req = HttpGet(fullURI)
+
         val res = httpClient.execute(req, context)
         esportsApiConfig.println(
             when (context.cacheResponseStatus) {
@@ -66,6 +82,12 @@ open class EsportsApiHttpClient(
         }
 
         res.close()
+
+        if (fileStoreConfig != null) {
+            esportsApiConfig.println("FileStore is not null. Storing the json in file ${fullURI.toASCIIString()}.json")
+            localFileStore.store(fullURI.toASCIIString(), body)
+        }
+
         return body
     }
 
