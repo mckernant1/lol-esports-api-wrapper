@@ -55,7 +55,7 @@ open class EsportsApiHttpClient(
             esportsApiConfig.println("Checking to see if the URL is stored in file storage")
             val potentialResult = localFileStore.retrieve(fullURI.toASCIIString())
             if (potentialResult != null) {
-                esportsApiConfig.println("The URL was stored in file storage. No need to call")
+                esportsApiConfig.println("The URL '${fullURI.toASCIIString()}' was stored in file storage. No need to call")
                 return potentialResult
             }
         }
