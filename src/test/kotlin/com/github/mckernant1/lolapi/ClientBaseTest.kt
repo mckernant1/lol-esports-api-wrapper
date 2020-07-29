@@ -1,7 +1,6 @@
 package com.github.mckernant1.lolapi
 
 import com.github.mckernant1.lolapi.config.EsportsApiConfig
-import com.github.mckernant1.lolapi.fstore.LocalFileStoreConfig
 import org.apache.http.impl.client.cache.CacheConfig
 import org.junit.Rule
 import org.junit.rules.Stopwatch
@@ -22,7 +21,6 @@ internal open class ClientBaseTest {
         .build()
     protected open val noCacheEsportsApiConfig = EsportsApiConfig(
         cacheConfig = cacheConfig,
-        logger = System.out,
-        fileSystemStorageConfig = LocalFileStoreConfig()
+        logger = System.out
     )
 }
