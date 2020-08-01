@@ -1,5 +1,6 @@
 package com.github.mckernant1.lolapi.schedule
 
+import java.io.Serializable
 import java.util.*
 
 /**
@@ -26,7 +27,7 @@ data class Match(
     val team1: String,
     val team2: String,
     val date: Date
-)
+) : Serializable
 
 /**
  * Has simple data on an entire split
@@ -35,6 +36,6 @@ data class Split(
     val startDate: Date,
     val endDate: Date,
     val matches: List<Match>
-)
+) : Serializable
 
 

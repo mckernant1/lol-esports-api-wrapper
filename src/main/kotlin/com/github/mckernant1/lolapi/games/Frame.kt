@@ -1,6 +1,7 @@
 package com.github.mckernant1.lolapi.games
 
 import com.beust.klaxon.Json
+import java.io.Serializable
 
 
 data class TeamPlayerFrame(
@@ -13,7 +14,7 @@ data class TeamPlayerFrame(
     val totalGold: Int,
     val currentHealth: Int,
     val maxHealth: Int
-)
+) : Serializable
 
 
 data class TeamFrame(
@@ -24,11 +25,11 @@ data class TeamFrame(
     val totalKills: Int,
     val dragons: List<String>,
     @Json("participants") val teamPlayers: List<TeamPlayerFrame>
-)
+) : Serializable
 
 data class Frame(
     @Json("rfc460Timestamp") val timestamp: String,
     val gameState: String,
     val blueTeam: TeamFrame,
     val redTeam: TeamFrame
-)
+) : Serializable

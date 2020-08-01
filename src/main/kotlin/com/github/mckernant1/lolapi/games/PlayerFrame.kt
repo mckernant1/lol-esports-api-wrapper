@@ -1,13 +1,14 @@
 package com.github.mckernant1.lolapi.games
 
 import com.beust.klaxon.Json
+import java.io.Serializable
 
 
 data class PerkMetaData(
     val styleId: Double,
     val subStyleId: Double,
     val perks: List<Double>
-)
+) : Serializable
 
 
 data class PlayerFrame(
@@ -33,9 +34,9 @@ data class PlayerFrame(
     val items: List<Double>,
     val perkMetadata: PerkMetaData,
     val abilities: List<String>
-)
+) : Serializable
 
 data class DetailFrame(
     @Json("rfc460Timestamp") val timestamp: String,
     @Json("participants") val participantData: List<PlayerFrame>
-)
+) : Serializable

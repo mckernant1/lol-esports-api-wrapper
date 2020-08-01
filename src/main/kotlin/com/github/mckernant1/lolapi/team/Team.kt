@@ -1,6 +1,7 @@
 package com.github.mckernant1.lolapi.team
 
 import com.beust.klaxon.Json
+import java.io.Serializable
 
 data class Player(
     @Json("id") val playerId: String,
@@ -9,7 +10,7 @@ data class Player(
     val lastName: String,
     val role: String,
     @Json("image") val imageURL: String
-)
+) : Serializable
 
 data class Team(
     val teamId: String,
@@ -18,4 +19,4 @@ data class Team(
     val code: String,
     val homeLeagueCode: String,
     val players: List<Player>
-)
+) : Serializable
