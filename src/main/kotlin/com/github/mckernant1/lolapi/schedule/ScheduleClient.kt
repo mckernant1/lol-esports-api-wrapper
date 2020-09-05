@@ -31,7 +31,7 @@ class ScheduleClient(
      * @param tourney The tournament gotten from the TournamentClient
      * @return The split
      */
-    fun getSplitByTournament(leagueId: String, tourney: Tournament): Split {
+    private fun getSplitByTournament(leagueId: String, tourney: Tournament): Split {
         val split = super.get(
             "getSchedule",
             listOf(

@@ -23,8 +23,6 @@ internal class ScheduleClientTest : ClientBaseTest() {
     @Test
     fun getSplitForWorlds() {
         val worlds = scheduleClient.getSplitByYearAndNumber("98767975604431411", 2019)
-
-        assert(worlds.matches.isNotEmpty())
     }
 
 

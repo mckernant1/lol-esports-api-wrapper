@@ -41,4 +41,10 @@ internal class TournamentClientTest : ClientBaseTest() {
         )
         assert(standings.isNotEmpty())
     }
+
+    @Test
+    fun getWorlds() {
+        val worlds = tournamentClient.getTournamentsForLeague("98767975604431411")
+        assert(worlds.isNotEmpty())
+    }
 }

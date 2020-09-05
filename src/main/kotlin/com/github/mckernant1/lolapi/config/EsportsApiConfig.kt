@@ -1,19 +1,17 @@
 package com.github.mckernant1.lolapi.config
 
 import org.apache.http.impl.client.cache.CacheConfig
-import java.io.OutputStream
-import java.io.PrintStream
 
 /**
  * @param endpointHost the host of the API to reach out to
  * @param languageCode the language code ENUM of the language you want
- * @param logger Specify a PrintStream for the config. Default is null
+ * @param logger Specify a print function
  * @param cacheConfig Specify Caching properties for the httpClient
  */
 data class EsportsApiConfig(
     val endpointHost: HostUrl = HostUrl.ESPORTS_API_1,
     val languageCode: LanguageCode = LanguageCode.EN_US,
-    val logger: PrintStream = PrintStream(NullOutputStream()),
+    val logger: (String) -> Unit = {},
     val cacheConfig: CacheConfig? = CacheConfig.DEFAULT
 ) {
     init {
@@ -21,11 +19,7 @@ data class EsportsApiConfig(
     }
 
     internal fun println(s: String) {
-        logger.println("[ESPORTS_API_WRAPPER]: $s")
+        logger("[ESPORTS_API_WRAPPER]: $s")
     }
 }
 
-
-private class NullOutputStream : OutputStream() {
-    override fun write(p0: Int) = Unit
-}

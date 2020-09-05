@@ -21,6 +21,6 @@ internal open class ClientBaseTest {
         .build()
     protected open val noCacheEsportsApiConfig = EsportsApiConfig(
         cacheConfig = cacheConfig,
-        logger = System.out
+        logger = { println(it) }
     )
 }
