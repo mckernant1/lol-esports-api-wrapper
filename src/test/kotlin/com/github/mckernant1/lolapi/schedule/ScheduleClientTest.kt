@@ -13,7 +13,7 @@ internal class ScheduleClientTest : ClientBaseTest() {
             "98767991299243165",
             2020,
             2
-        )
+        ).also { println(it) }
 
         assert(split.matches.isNotEmpty())
 
@@ -24,6 +24,4 @@ internal class ScheduleClientTest : ClientBaseTest() {
     fun getSplitForWorlds() {
         val worlds = scheduleClient.getSplitByYearAndNumber("98767975604431411", 2019)
     }
-
-
 }

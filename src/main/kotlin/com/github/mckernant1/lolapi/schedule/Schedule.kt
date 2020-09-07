@@ -1,7 +1,7 @@
 package com.github.mckernant1.lolapi.schedule
 
 import java.io.Serializable
-import java.util.*
+import java.time.ZonedDateTime
 
 /**
  * Match Type ENUM
@@ -26,15 +26,15 @@ data class Match(
     val team2NumWins: Int,
     val team1: String,
     val team2: String,
-    val date: Date
+    val date: ZonedDateTime
 ) : Serializable
 
 /**
  * Has simple data on an entire split
  */
 data class Split(
-    val startDate: Date,
-    val endDate: Date,
+    val startDate: ZonedDateTime,
+    val endDate: ZonedDateTime,
     val matches: List<Match>
 ) : Serializable
 

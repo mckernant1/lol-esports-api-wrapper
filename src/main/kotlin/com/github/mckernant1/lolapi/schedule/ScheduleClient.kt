@@ -9,8 +9,12 @@ import com.github.mckernant1.lolapi.tournaments.TournamentClient
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import java.io.StringReader
-import java.text.ParseException
-import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.util.*
 
 class ScheduleClient(
@@ -39,9 +43,12 @@ class ScheduleClient(
             )
         )
         val json: JsonObject = parser.parseJsonObject(StringReader(split))
-        val formatter = SimpleDateFormat("yyyy-MM-dd")
-        val startDate = formatter.parse(tourney.startDate)
-        val endDate = formatter.parse(tourney.endDate)
+        val startDate = LocalDate.parse(tourney.startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay(
+            ZoneId.of("UTC")
+        )
+        val endDate = LocalDate.parse(tourney.endDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay(
+            ZoneId.of("UTC")
+        )
         var matches = parseMatches(json).filter {
             it.date > startDate &&
                     it.date < endDate
@@ -124,15 +131,12 @@ class ScheduleClient(
      * Async method to parse an event to a match. Also retrieves the gameIds
      */
     private suspend fun eventToMatch(event: JsonObject): Match? {
-        lateinit var date: Date
-        try {
-            val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
-            formatter.timeZone = TimeZone.getTimeZone("UTC")
-            date = formatter.parse(event.string("startTime"))
-        } catch (e: ParseException) {
-            val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-            formatter.timeZone = TimeZone.getTimeZone("UTC")
-            date = formatter.parse(event.string("startTime"))
+        val date: ZonedDateTime = try {
+            LocalDateTime.parse(event.string("startTime"), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"))
+                .atZone(ZoneId.of("UTC"))
+        } catch (e: DateTimeParseException) {
+            LocalDateTime.parse(event.string("startTime"), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))
+                .atZone(ZoneId.of("UTC"))
         }
         val matches = event.obj("match") ?: return null
 
