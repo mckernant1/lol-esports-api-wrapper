@@ -24,7 +24,7 @@ repositories {
 ...
 dependencies {
     ...
-    implementation("com.github.mckernant1:lol-esports-api-wrapper:0.1.3")
+    implementation("com.github.mckernant1:lol-esports-api-wrapper:0.1.14_1")
 }
 ```
 
@@ -71,7 +71,7 @@ cacheConfig: Specify Caching properties for the httpClient
 data class EsportsApiConfig(
     val endpointHost: String = "esports-api.lolesports.com/persisted/gw/",
     val languageCode: LanguageCode = LanguageCode.EN_US,
-    val logger: PrintStream = PrintStream(NullOutputStream()),
+    val logger: PrintStream = {},
     val cacheConfig: CacheConfig? = CacheConfig.DEFAULT
 )
 ```
