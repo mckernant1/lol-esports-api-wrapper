@@ -9,10 +9,7 @@ import com.github.mckernant1.lolapi.tournaments.TournamentClient
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import java.io.StringReader
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.util.*
@@ -49,10 +46,8 @@ class ScheduleClient(
         val endDate = LocalDate.parse(tourney.endDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay(
             ZoneId.of("UTC")
         )
-        var matches = parseMatches(json).filter {
-            it.date > startDate &&
-                    it.date < endDate
-        }.toMutableList()
+        println("Start: $startDate end: $endDate")
+        var matches = parseMatches(json).toMutableList()
         var prevJson = json
         while (matches.find { it.date < startDate } == null) {
             val prevPageToken = (prevJson.obj("data")
@@ -74,7 +69,8 @@ class ScheduleClient(
             matches.addAll(newMatches)
         }
         matches = matches.filter {
-            it.date > startDate && it.date < endDate
+            it.date >= startDate &&
+                    it.date <= (endDate + Duration.ofDays(1))
         }.toMutableList()
         return Split(startDate, endDate, matches)
     }
