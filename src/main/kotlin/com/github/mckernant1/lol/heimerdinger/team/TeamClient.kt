@@ -52,24 +52,24 @@ class TeamClient(
         return teamsJson["data"]
             ?.jsonObject?.get("teams")
             ?.jsonArray
-            ?.map {
+            ?.mapNotNull {
                 if (it.jsonObject["id"]?.jsonPrimitive?.content == "0") {
-                    return@map null
+                    return@mapNotNull null
                 }
-                try {
-                    return@map Team(
-                        teamId = it.jsonObject["id"]?.jsonPrimitive?.content!!,
-                        slug = it.jsonObject["slug"]?.jsonPrimitive?.content!!,
-                        name = it.jsonObject["name"]?.jsonPrimitive?.content!!,
-                        code = it.jsonObject["code"]?.jsonPrimitive?.content!!,
-                        homeLeagueCode = it.jsonObject["homeLeague"]?.jsonObject?.get("name")?.jsonPrimitive?.content
-                            ?: "N/A",
-                        players = parsePlayers(it.jsonObject)
-                    )
-                } catch (e: NullPointerException) {
-                    throw SerializationException("Error parsing team with Json $it")
+                val homeLeagueCode = try {
+                    it.jsonObject["homeLeague"]?.jsonObject?.get("name")?.jsonPrimitive?.content ?: "N/A"
+                } catch (e: java.lang.IllegalArgumentException) {
+                    "N/A"
                 }
-            }?.toList()?.filterNotNull()?.filter { it.slug.toLowerCase() != "tbd" }
+                return@mapNotNull Team(
+                    teamId = it.jsonObject["id"]?.jsonPrimitive?.content!!,
+                    slug = it.jsonObject["slug"]?.jsonPrimitive?.content!!,
+                    name = it.jsonObject["name"]?.jsonPrimitive?.content!!,
+                    code = it.jsonObject["code"]?.jsonPrimitive?.content!!,
+                    homeLeagueCode = homeLeagueCode,
+                    players = parsePlayers(it.jsonObject)
+                )
+            }?.filter { it.slug.toLowerCase() != "tbd" }
             ?: throw SerializationException("Error parsing Json $teamsJson")
     }
 
