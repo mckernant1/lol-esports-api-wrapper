@@ -2,9 +2,8 @@ package com.github.mckernant1.lol.heimerdinger.games
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon
-import com.github.mckernant1.lol.heimerdinger.EsportsApiHttpClient
-import com.github.mckernant1.lolapi.config.EsportsApiConfig
-import com.github.mckernant1.lolapi.config.HostUrl
+import com.github.mckernant1.lol.heimerdinger.config.EsportsApiConfig
+import com.github.mckernant1.lol.heimerdinger.config.HostUrl
 import java.io.StringReader
 import java.time.LocalDateTime
 import java.time.ZoneId

@@ -1,7 +1,8 @@
 package com.github.mckernant1.lol.heimerdinger.leagues
 
-import java.io.Serializable
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class League(
     val name: String,
     val slug: String,
@@ -9,5 +10,5 @@ data class League(
     val image: String,
     val priority: Int,
     val region: String
-) : Serializable
+)
 

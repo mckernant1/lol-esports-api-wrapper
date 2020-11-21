@@ -9,7 +9,8 @@ plugins {
     `java-library`
     signing
     jacoco
-    kotlin("jvm") version "1.3.72"
+    kotlin("jvm") version "1.4.10"
+    kotlin("plugin.serialization") version "1.4.10"
     id("org.jetbrains.dokka") version "0.10.1"
     id("name.remal.maven-publish-ossrh") version "1.0.192"
 }
@@ -26,6 +27,7 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.3.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
     implementation("org.apache.httpcomponents:httpclient-cache:4.5.12")
     implementation("com.beust:klaxon:5.0.1")
     testImplementation("junit:junit:4.12")

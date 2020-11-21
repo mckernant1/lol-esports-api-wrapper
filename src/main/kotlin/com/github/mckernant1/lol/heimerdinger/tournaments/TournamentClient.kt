@@ -3,10 +3,9 @@ package com.github.mckernant1.lol.heimerdinger.tournaments
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon
 import com.beust.klaxon.KlaxonException
-import com.github.mckernant1.lol.heimerdinger.EsportsApiHttpClient
-import com.github.mckernant1.lolapi.config.EsportsApiConfig
-import com.github.mckernant1.lolapi.leagues.LeagueClient
-import com.github.mckernant1.lolapi.schedule.ScheduleClient
+import com.github.mckernant1.lol.heimerdinger.config.EsportsApiConfig
+import com.github.mckernant1.lol.heimerdinger.leagues.LeagueClient
+import com.github.mckernant1.lol.heimerdinger.schedule.ScheduleClient
 import java.io.StringReader
 
 class TournamentClient(

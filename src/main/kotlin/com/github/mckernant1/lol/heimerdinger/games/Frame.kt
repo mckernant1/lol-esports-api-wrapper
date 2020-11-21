@@ -1,9 +1,9 @@
 package com.github.mckernant1.lol.heimerdinger.games
 
 import com.beust.klaxon.Json
-import java.io.Serializable
+import kotlinx.serialization.Serializable
 
-
+@Serializable
 data class TeamPlayerFrame(
     @Json("participantId") val playerId: Int,
     val level: Int,
@@ -14,9 +14,9 @@ data class TeamPlayerFrame(
     val totalGold: Int,
     val currentHealth: Int,
     val maxHealth: Int
-) : Serializable
+)
 
-
+@Serializable
 data class TeamFrame(
     val totalGold: Int,
     val inhibitors: Int,
@@ -25,11 +25,12 @@ data class TeamFrame(
     val totalKills: Int,
     val dragons: List<String>,
     @Json("participants") val teamPlayers: List<TeamPlayerFrame>
-) : Serializable
+)
 
+@Serializable
 data class Frame(
     @Json("rfc460Timestamp") val timestamp: String,
     val gameState: String,
     val blueTeam: TeamFrame,
     val redTeam: TeamFrame
-) : Serializable
+)

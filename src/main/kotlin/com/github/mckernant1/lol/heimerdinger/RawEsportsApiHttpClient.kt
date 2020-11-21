@@ -1,6 +1,7 @@
 package com.github.mckernant1.lol.heimerdinger
 
-import com.github.mckernant1.lolapi.config.EsportsApiConfig
+import com.github.mckernant1.lol.heimerdinger.config.EsportsApiConfig
+
 
 class RawEsportsApiHttpClient(
     esportsApiConfig: EsportsApiConfig = EsportsApiConfig()

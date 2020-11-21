@@ -3,8 +3,7 @@ package com.github.mckernant1.lol.heimerdinger.team
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon
 import com.beust.klaxon.KlaxonException
-import com.github.mckernant1.lol.heimerdinger.EsportsApiHttpClient
-import com.github.mckernant1.lolapi.config.EsportsApiConfig
+import com.github.mckernant1.lol.heimerdinger.config.EsportsApiConfig
 import java.io.StringReader
 
 class TeamClient(

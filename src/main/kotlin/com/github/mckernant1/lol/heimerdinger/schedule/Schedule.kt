@@ -1,6 +1,7 @@
 package com.github.mckernant1.lol.heimerdinger.schedule
 
-import java.io.Serializable
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
 import java.time.ZonedDateTime
 
 /**
@@ -17,6 +18,7 @@ enum class MatchType(val numberOfGames: Int) {
  * Simple Object to represent a match.
  * Does not give info about games in a BO3/BO5
  */
+@Serializable
 data class Match(
     val id: String,
     val gameIds: List<String>,
@@ -26,16 +28,17 @@ data class Match(
     val team2NumWins: Int,
     val team1: String,
     val team2: String,
-    val date: ZonedDateTime
-) : Serializable
+    @Contextual val date: ZonedDateTime
+)
 
 /**
  * Has simple data on an entire split
  */
+@Serializable
 data class Split(
-    val startDate: ZonedDateTime,
-    val endDate: ZonedDateTime,
+    @Contextual val startDate: ZonedDateTime,
+    @Contextual val endDate: ZonedDateTime,
     val matches: List<Match>
-) : Serializable
+)
 
 

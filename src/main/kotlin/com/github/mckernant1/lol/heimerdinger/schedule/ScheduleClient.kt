@@ -2,10 +2,9 @@ package com.github.mckernant1.lol.heimerdinger.schedule
 
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Klaxon
-import com.github.mckernant1.lol.heimerdinger.EsportsApiHttpClient
-import com.github.mckernant1.lolapi.config.EsportsApiConfig
-import com.github.mckernant1.lolapi.tournaments.Tournament
-import com.github.mckernant1.lolapi.tournaments.TournamentClient
+import com.github.mckernant1.lol.heimerdinger.config.EsportsApiConfig
+import com.github.mckernant1.lol.heimerdinger.tournaments.Tournament
+import com.github.mckernant1.lol.heimerdinger.tournaments.TournamentClient
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import java.io.StringReader
