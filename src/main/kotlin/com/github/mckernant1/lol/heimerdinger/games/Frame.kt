@@ -14,7 +14,7 @@ data class TeamPlayerFrame(
     val totalGold: Int,
     val currentHealth: Int,
     val maxHealth: Int
-)
+) : java.io.Serializable
 
 @Serializable
 data class TeamFrame(
@@ -25,7 +25,7 @@ data class TeamFrame(
     val totalKills: Int,
     val dragons: List<String>,
     @SerialName("participants") val teamPlayers: List<TeamPlayerFrame>
-)
+) : java.io.Serializable
 
 @Serializable
 data class Frame(
@@ -33,4 +33,4 @@ data class Frame(
     val gameState: String,
     val blueTeam: TeamFrame,
     val redTeam: TeamFrame
-)
+) : java.io.Serializable

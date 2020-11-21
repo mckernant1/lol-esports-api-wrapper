@@ -8,7 +8,7 @@ data class PerkMetaData(
     val styleId: Double,
     val subStyleId: Double,
     val perks: List<Double>
-)
+) : java.io.Serializable
 
 @Serializable
 data class PlayerFrame(
@@ -34,10 +34,10 @@ data class PlayerFrame(
     val items: List<Double>,
     val perkMetadata: PerkMetaData,
     val abilities: List<String>
-)
+) : java.io.Serializable
 
 @Serializable
 data class DetailFrame(
     @SerialName("rfc460Timestamp") val timestamp: String,
     @SerialName("participants") val participantData: List<PlayerFrame>
-)
+) : java.io.Serializable

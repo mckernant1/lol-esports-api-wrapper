@@ -29,7 +29,7 @@ data class Match(
     val team1: String,
     val team2: String,
     @Contextual val date: ZonedDateTime
-)
+) : java.io.Serializable
 
 /**
  * Has simple data on an entire split
@@ -39,6 +39,6 @@ data class Split(
     @Contextual val startDate: ZonedDateTime,
     @Contextual val endDate: ZonedDateTime,
     val matches: List<Match>
-)
+) : java.io.Serializable
 
 

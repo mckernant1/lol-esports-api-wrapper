@@ -11,7 +11,7 @@ data class Player(
     val lastName: String,
     val role: String,
     @SerialName("image") val imageURL: String
-)
+) : java.io.Serializable
 
 @Serializable
 data class Team(
@@ -21,4 +21,4 @@ data class Team(
     val code: String,
     val homeLeagueCode: String,
     val players: List<Player>
-)
+) : java.io.Serializable
