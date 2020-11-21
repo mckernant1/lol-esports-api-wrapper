@@ -50,11 +50,15 @@ class ScheduleClient(
         var matches = parseMatches(json).toMutableList()
         var prevJson = json
         while (matches.find { it.date < startDate } == null) {
-            val prevPageToken = (prevJson["data"]
+            println(prevJson)
+            val prevPageToken = prevJson["data"]
                 ?.jsonObject?.get("schedule")
                 ?.jsonObject?.get("pages")
                 ?.jsonObject?.get("older")
-                ?.jsonPrimitive?.content ?: break)
+                ?.jsonPrimitive?.content ?: "null"
+
+            if (prevPageToken == "null") break
+
             val prevPage = super.get(
                 "getSchedule",
                 listOf(
