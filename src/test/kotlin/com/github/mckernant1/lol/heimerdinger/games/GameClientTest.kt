@@ -1,8 +1,8 @@
 package com.github.mckernant1.lol.heimerdinger.games
 
-import com.github.mckernant1.lolapi.ClientBaseTest
-import com.github.mckernant1.lolapi.config.EsportsApiConfig
-import com.github.mckernant1.lolapi.config.HostUrl
+import com.github.mckernant1.lol.heimerdinger.ClientBaseTest
+import com.github.mckernant1.lol.heimerdinger.config.EsportsApiConfig
+import com.github.mckernant1.lol.heimerdinger.config.HostUrl
 import org.junit.Test
 
 

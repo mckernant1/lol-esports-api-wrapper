@@ -29,7 +29,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
     implementation("org.apache.httpcomponents:httpclient-cache:4.5.12")
-    implementation("com.beust:klaxon:5.0.1")
     testImplementation("junit:junit:4.12")
 }
 

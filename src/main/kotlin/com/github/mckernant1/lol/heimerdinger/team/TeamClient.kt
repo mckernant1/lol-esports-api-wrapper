@@ -1,21 +1,21 @@
 package com.github.mckernant1.lol.heimerdinger.team
 
-import com.beust.klaxon.JsonObject
-import com.beust.klaxon.Klaxon
-import com.beust.klaxon.KlaxonException
+import com.github.mckernant1.lol.heimerdinger.EsportsApiHttpClient
 import com.github.mckernant1.lol.heimerdinger.config.EsportsApiConfig
-import java.io.StringReader
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.*
 
 class TeamClient(
     esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
-) : _root_ide_package_.com.github.mckernant1.lol.heimerdinger.EsportsApiHttpClient(esportsApiConfig) {
+) : EsportsApiHttpClient(esportsApiConfig) {
 
     /**
      * @return This list of all teams from the API
      */
     fun getAllTeams(): List<Team> {
         val teamsString = super.get("getTeams")
-        val teamsJson = parser.parseJsonObject(StringReader(teamsString))
+        val teamsJson = parser.decodeFromString<JsonObject>(teamsString)
         return parseTeams(teamsJson)
     }
 
@@ -29,7 +29,7 @@ class TeamClient(
             "getTeams",
             listOf(Pair("id", slug))
         )
-        val teamJson = parser.parseJsonObject(StringReader(teamString))
+        val teamJson = parser.decodeFromString<JsonObject>(teamString)
         return parseTeams(teamJson).find { it.slug == slug }
             ?: throw IllegalArgumentException("Team with this slug does not exist")
     }
@@ -49,38 +49,40 @@ class TeamClient(
      * Parses teams from json. Filters out TBD Teams
      */
     private fun parseTeams(teamsJson: JsonObject): List<Team> {
-        return teamsJson.obj("data")
-            ?.array<JsonObject>("teams")
-            ?.mapChildrenObjectsOnly {
-                if (it.string("id") == "0") {
-                    return@mapChildrenObjectsOnly null
+        return teamsJson["data"]
+            ?.jsonObject?.get("teams")
+            ?.jsonArray
+            ?.map {
+                if (it.jsonObject["id"]?.jsonPrimitive?.content == "0") {
+                    return@map null
                 }
                 try {
-                    return@mapChildrenObjectsOnly Team(
-                        teamId = it.string("id")!!,
-                        slug = it.string("slug")!!,
-                        name = it.string("name")!!,
-                        code = it.string("code")!!,
-                        homeLeagueCode = it.obj("homeLeague")?.string("name") ?: "N/A",
-                        players = parsePlayers(it)
+                    return@map Team(
+                        teamId = it.jsonObject["id"]?.jsonPrimitive?.content!!,
+                        slug = it.jsonObject["slug"]?.jsonPrimitive?.content!!,
+                        name = it.jsonObject["name"]?.jsonPrimitive?.content!!,
+                        code = it.jsonObject["code"]?.jsonPrimitive?.content!!,
+                        homeLeagueCode = it.jsonObject["homeLeague"]?.jsonObject?.get("name")?.jsonPrimitive?.content
+                            ?: "N/A",
+                        players = parsePlayers(it.jsonObject)
                     )
                 } catch (e: NullPointerException) {
-                    throw KlaxonException("Error parsing team with Json ${it.toJsonString()}")
+                    throw SerializationException("Error parsing team with Json $it")
                 }
             }?.toList()?.filterNotNull()?.filter { it.slug.toLowerCase() != "tbd" }
-            ?: throw KlaxonException("Error parsing Json $teamsJson")
+            ?: throw SerializationException("Error parsing Json $teamsJson")
     }
 
     private fun parsePlayers(teamJson: JsonObject): List<Player> {
-        return teamJson.array<JsonObject>("players")
-            ?.mapChildrenObjectsOnly {
-                return@mapChildrenObjectsOnly parser.parse<Player>(it.toJsonString())
-                    ?: throw KlaxonException("Error parsing player with jsonString ${it.toJsonString()}")
+        return teamJson["players"]
+            ?.jsonArray
+            ?.map {
+                return@map parser.decodeFromJsonElement<Player>(it)
             }?.toList()
-            ?: throw KlaxonException("Error parsing team with json $teamJson")
+            ?: throw SerializationException("Error parsing team with json $teamJson")
     }
 
     companion object {
-        private val parser = Klaxon()
+        private val parser = Json
     }
 }

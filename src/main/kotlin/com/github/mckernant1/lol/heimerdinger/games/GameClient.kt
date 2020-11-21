@@ -1,17 +1,19 @@
 package com.github.mckernant1.lol.heimerdinger.games
 
-import com.beust.klaxon.JsonObject
-import com.beust.klaxon.Klaxon
+import com.github.mckernant1.lol.heimerdinger.EsportsApiHttpClient
 import com.github.mckernant1.lol.heimerdinger.config.EsportsApiConfig
 import com.github.mckernant1.lol.heimerdinger.config.HostUrl
-import java.io.StringReader
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.decodeFromJsonElement
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 class GameClient(
     esportsApiConfig: EsportsApiConfig = EsportsApiConfig(endpointHost = HostUrl.LIVE_STATS_API)
-) : _root_ide_package_.com.github.mckernant1.lol.heimerdinger.EsportsApiHttpClient(esportsApiConfig) {
+) : EsportsApiHttpClient(esportsApiConfig) {
 
     /**
      * The GameId can be gotten from the Match data structure in the ScheduleClient
@@ -33,9 +35,12 @@ class GameClient(
             params
         )
 
-        val gameJson = parser.parseJsonObject(StringReader(gameString))
-        val gameData = parser.parseFromJsonObject<GameData>(gameJson.obj("gameMetadata")!!)!!
-        val frames = parser.parseFromJsonArray<Frame>(gameJson.array<JsonObject>("frames")!!)!!
+        val gameJson = parser.decodeFromString<JsonObject>(gameString)
+        println(gameJson)
+        val gameData = parser.decodeFromJsonElement<GameData>(gameJson["gameMetadata"]!!)
+        println(gameData)
+        val frames = parser.decodeFromJsonElement<List<Frame>>(gameJson["frames"]!!)
+        println(frames)
 
         return Game(gameData, frames)
     }
@@ -69,8 +74,8 @@ class GameClient(
         }
 
         val detailString = super.get("details/$gameId", params)
-        val detailJson = parser.parseJsonObject(StringReader(detailString))
-        return parser.parseFromJsonArray<DetailFrame>(detailJson.array<JsonObject>("frames")!!)!!
+        val detailJson = parser.decodeFromString<JsonObject>(detailString)
+        return parser.decodeFromJsonElement<List<DetailFrame>>(detailJson["frames"]!!)
     }
 
     private fun formatTimeToString(time: LocalDateTime): String =
@@ -78,7 +83,9 @@ class GameClient(
 
 
     companion object {
-        private val parser = Klaxon()
+        private val parser = Json {
+            ignoreUnknownKeys = true
+        }
     }
 
 }

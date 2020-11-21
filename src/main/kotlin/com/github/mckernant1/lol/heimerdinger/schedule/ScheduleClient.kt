@@ -1,13 +1,14 @@
 package com.github.mckernant1.lol.heimerdinger.schedule
 
-import com.beust.klaxon.JsonObject
-import com.beust.klaxon.Klaxon
+import com.github.mckernant1.lol.heimerdinger.EsportsApiHttpClient
 import com.github.mckernant1.lol.heimerdinger.config.EsportsApiConfig
 import com.github.mckernant1.lol.heimerdinger.tournaments.Tournament
 import com.github.mckernant1.lol.heimerdinger.tournaments.TournamentClient
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
-import java.io.StringReader
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.*
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -15,7 +16,7 @@ import java.util.*
 
 class ScheduleClient(
     val esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
-) : _root_ide_package_.com.github.mckernant1.lol.heimerdinger.EsportsApiHttpClient(esportsApiConfig) {
+) : EsportsApiHttpClient(esportsApiConfig) {
 
     /**
      * @param leagueId The Id of the league gotten from the leagueClient
@@ -38,7 +39,7 @@ class ScheduleClient(
                 Pair("leagueId", leagueId)
             )
         )
-        val json: JsonObject = parser.parseJsonObject(StringReader(split))
+        val json = parser.decodeFromString<JsonObject>(split)
         val startDate = LocalDate.parse(tourney.startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay(
             ZoneId.of("UTC")
         )
@@ -49,10 +50,11 @@ class ScheduleClient(
         var matches = parseMatches(json).toMutableList()
         var prevJson = json
         while (matches.find { it.date < startDate } == null) {
-            val prevPageToken = (prevJson.obj("data")
-                ?.obj("schedule")
-                ?.obj("pages")
-                ?.string("older") ?: break)
+            val prevPageToken = (prevJson["data"]
+                ?.jsonObject?.get("schedule")
+                ?.jsonObject?.get("pages")
+                ?.jsonObject?.get("older")
+                ?.jsonPrimitive?.content ?: break)
             val prevPage = super.get(
                 "getSchedule",
                 listOf(
@@ -60,7 +62,7 @@ class ScheduleClient(
                     Pair("pageToken", prevPageToken)
                 )
             )
-            prevJson = parser.parseJsonObject(StringReader(prevPage))
+            prevJson = parser.decodeFromString(prevPage)
             val newMatches = parseMatches(prevJson).filter {
                 it.date > startDate &&
                         it.date < endDate
@@ -112,13 +114,13 @@ class ScheduleClient(
      */
     private fun parseMatches(json: JsonObject): List<Match> {
         return runBlocking {
-            return@runBlocking json
-                .obj("data")
-                ?.obj("schedule")
-                ?.array<JsonObject>("events")
-                ?.mapChildrenObjectsOnly { event: JsonObject ->
-                    async { eventToMatch(event) }
-                }!!.mapNotNull { it.await() }.toList()
+            return@runBlocking json["data"]
+                ?.jsonObject?.get("schedule")
+                ?.jsonObject?.get("events")
+                ?.jsonArray?.map { event: JsonElement ->
+                    async { eventToMatch(event.jsonObject) }
+                }?.mapNotNull { it.await() }?.toList()
+                ?: throw SerializationException()
         }
     }
 
@@ -127,41 +129,40 @@ class ScheduleClient(
      */
     private suspend fun eventToMatch(event: JsonObject): Match? {
         val date: ZonedDateTime = try {
-            LocalDateTime.parse(event.string("startTime"), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"))
+            LocalDateTime.parse(event["startTime"]!!.jsonPrimitive.content, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"))
                 .atZone(ZoneId.of("UTC"))
         } catch (e: DateTimeParseException) {
-            LocalDateTime.parse(event.string("startTime"), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))
+            LocalDateTime.parse(event["startTime"]!!.jsonPrimitive.content, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"))
                 .atZone(ZoneId.of("UTC"))
         }
-        val matches = event.obj("match") ?: return null
+        val matches = event["match"]?.jsonObject ?: return null
 
-        val matchId = matches.string("id")
-        val teams = matches
-            .array<JsonObject>("teams")
-        val team1 = teams?.get(0)?.string("name")
-        val team2 = teams?.get(1)?.string("name")
+        val matchId = matches["id"]?.jsonPrimitive?.content
+            ?: return null
+        val teams = matches["teams"]?.jsonArray
+        val team1 = teams?.get(0)?.jsonObject?.get("name")?.jsonPrimitive?.content ?: return null
+        val team2 = teams?.get(1)?.jsonObject?.get("name")?.jsonPrimitive?.content ?: return null
 
-        val team1Results = teams?.get(0)
-            ?.obj("result")
+        val team1Results = teams?.get(0)?.jsonObject?.get("result")?.jsonObject
 
-        val team2Results = teams?.get(1)
-            ?.obj("result")
+        val team2Results = teams?.get(1)?.jsonObject?.get("result")?.jsonObject
 
-        val team1NumWins: Int = team1Results?.int("gameWins") ?: 0
+        val team1NumWins: Int = team1Results?.get("gameWins")?.jsonPrimitive?.int ?: 0
 
-        val team2NumWins: Int = team2Results?.int("gameWins") ?: 0
+        val team2NumWins: Int = team2Results?.get("gameWins")?.jsonPrimitive?.int ?: 0
 
         var winner: String? = null
 
-        if (team1Results?.string("outcome") == "win") {
+        if (team1Results?.jsonObject?.get("outcome")?.jsonPrimitive?.content == "win") {
             winner = team1
-        } else if (team2Results?.string("outcome") == "win") {
+        } else if (team2Results?.jsonObject?.get("outcome")?.jsonPrimitive?.content == "win") {
             winner = team2
         }
 
-        val bestOfVar = matches
-            .obj("strategy")
-            ?.int("count")
+        val bestOfVar = matches.jsonObject["strategy"]
+            ?.jsonObject?.get("count")
+            ?.jsonPrimitive
+            ?.int ?: 1
 
         val matchType: MatchType = when (bestOfVar) {
             1 -> MatchType.BO1
@@ -185,18 +186,18 @@ class ScheduleClient(
 
     private suspend fun getGameIdsForMatchId(matchId: String): List<String> {
         val eventDetails = super.get("getEventDetails", listOf(Pair("id", matchId)))
-        val eventDetailsJson = parser.parseJsonObject(StringReader(eventDetails))
+        val eventDetailsJson = parser.decodeFromString<JsonObject>(eventDetails)
 
-        return eventDetailsJson.obj("data")
-            ?.obj("event")
-            ?.obj("match")
-            ?.array<JsonObject>("games")
-            ?.mapChildrenObjectsOnly {
-                it.string("id")!!
-            }!!.toList()
+        return eventDetailsJson["data"]
+            ?.jsonObject?.get("event")
+            ?.jsonObject?.get("match")
+            ?.jsonObject?.get("games")
+            ?.jsonArray?.mapNotNull {
+                it.jsonObject["id"]?.jsonPrimitive?.content
+            }?.toList() ?: throw SerializationException()
     }
 
     companion object {
-        private val parser = Klaxon()
+        private val parser = Json
     }
 }

@@ -1,16 +1,16 @@
 package com.github.mckernant1.lol.heimerdinger.tournaments
 
-import com.beust.klaxon.JsonObject
-import com.beust.klaxon.Klaxon
-import com.beust.klaxon.KlaxonException
+import com.github.mckernant1.lol.heimerdinger.EsportsApiHttpClient
 import com.github.mckernant1.lol.heimerdinger.config.EsportsApiConfig
 import com.github.mckernant1.lol.heimerdinger.leagues.LeagueClient
 import com.github.mckernant1.lol.heimerdinger.schedule.ScheduleClient
-import java.io.StringReader
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.*
 
 class TournamentClient(
     esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
-) : _root_ide_package_.com.github.mckernant1.lol.heimerdinger.EsportsApiHttpClient(esportsApiConfig) {
+) : EsportsApiHttpClient(esportsApiConfig) {
 
 
     /**
@@ -18,7 +18,7 @@ class TournamentClient(
      * @return the most recent tournament. Includes ongoing tournaments
      */
     fun getMostRecentTournament(leagueId: String): Tournament {
-        return getTournamentsForLeague(leagueId).maxBy { it.startDate } ?:
+        return getTournamentsForLeague(leagueId).maxByOrNull { it.startDate } ?:
                 throw NullPointerException("No tournaments in this league")
     }
 
@@ -32,13 +32,12 @@ class TournamentClient(
             "/getTournamentsForLeague",
             listOf(Pair("leagueId", leagueId))
         )
-        return parser.parseJsonObject(StringReader(res)).obj("data")
-            ?.array<JsonObject>("leagues")?.get(0)
-            ?.array<JsonObject>("tournaments")
-            ?.mapChildrenObjectsOnly {
-                return@mapChildrenObjectsOnly parser.parse<Tournament>(it.toJsonString())
-                    ?: throw KlaxonException("Tournament Parsing failed for tournament: $it")
-            }?.toList() ?: throw KlaxonException("Json parsing failed for result: $res")
+        return parser.decodeFromString<JsonObject>(res)["data"]
+            ?.jsonObject?.get("leagues")?.jsonArray?.get(0)
+            ?.jsonObject?.get("tournaments")?.jsonArray
+            ?.map {
+                return@map parser.decodeFromJsonElement<Tournament>(it)
+            }?.toList() ?: throw SerializationException("Json parsing failed for result: $res")
     }
 
     fun getStandingsForLeague(leagueId: String, splitYear: Int, splitNumber: Int? = null): List<Standing> {
@@ -64,7 +63,7 @@ class TournamentClient(
     }
 
     companion object {
-        private val parser = Klaxon()
+        private val parser = Json
         private val scheduleClient = ScheduleClient()
     }
 }

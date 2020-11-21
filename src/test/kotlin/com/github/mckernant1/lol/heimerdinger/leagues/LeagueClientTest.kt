@@ -1,6 +1,6 @@
 package com.github.mckernant1.lol.heimerdinger.leagues
 
-import com.github.mckernant1.lolapi.ClientBaseTest
+import com.github.mckernant1.lol.heimerdinger.ClientBaseTest
 import org.junit.Test
 
 

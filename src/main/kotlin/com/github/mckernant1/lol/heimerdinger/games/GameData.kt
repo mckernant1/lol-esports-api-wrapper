@@ -1,11 +1,12 @@
 package com.github.mckernant1.lol.heimerdinger.games
 
-import com.beust.klaxon.Json
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+
 
 @Serializable
 data class PlayerData(
-    @Json("participantId") val playerId: Int,
+    @SerialName("participantId") val playerId: Int,
     val summonerName: String,
     val championId: String,
     val role: String
@@ -13,15 +14,15 @@ data class PlayerData(
 
 @Serializable
 data class TeamData(
-    @Json("esportsTeamId") val teamId: String,
-    @Json("participantMetadata") val players: List<PlayerData>
+    @SerialName("esportsTeamId") val teamId: String,
+    @SerialName("participantMetadata") val players: List<PlayerData>
 )
 
 @Serializable
 data class GameData(
     val patchVersion: String,
-    @Json("blueTeamMetadata") val blueTeamData: TeamData,
-    @Json("redTeamMetadata") val redTeamData: TeamData
+    @SerialName("blueTeamMetadata") val blueTeamData: TeamData,
+    @SerialName("redTeamMetadata") val redTeamData: TeamData
 )
 
 @Serializable

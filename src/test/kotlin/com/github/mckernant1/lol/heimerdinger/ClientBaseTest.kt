@@ -1,6 +1,6 @@
 package com.github.mckernant1.lol.heimerdinger
 
-import com.github.mckernant1.lolapi.config.EsportsApiConfig
+import com.github.mckernant1.lol.heimerdinger.config.EsportsApiConfig
 import org.apache.http.impl.client.cache.CacheConfig
 import org.junit.Rule
 import org.junit.rules.Stopwatch

@@ -5,7 +5,7 @@ import com.github.mckernant1.lol.heimerdinger.config.EsportsApiConfig
 
 class RawEsportsApiHttpClient(
     esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
-) : _root_ide_package_.com.github.mckernant1.lol.heimerdinger.EsportsApiHttpClient(esportsApiConfig) {
+) : EsportsApiHttpClient(esportsApiConfig) {
 
     /**
      * Does a get request against the lol-esports API

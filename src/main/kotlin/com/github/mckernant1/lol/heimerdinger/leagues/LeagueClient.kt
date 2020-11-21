@@ -1,27 +1,24 @@
 package com.github.mckernant1.lol.heimerdinger.leagues
 
-import com.beust.klaxon.JsonObject
-import com.beust.klaxon.Klaxon
-import com.beust.klaxon.KlaxonException
+import com.github.mckernant1.lol.heimerdinger.EsportsApiHttpClient
 import com.github.mckernant1.lol.heimerdinger.config.EsportsApiConfig
-import java.io.StringReader
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.*
 
 class LeagueClient(
     esportsApiConfig: EsportsApiConfig = EsportsApiConfig()
-) : _root_ide_package_.com.github.mckernant1.lol.heimerdinger.EsportsApiHttpClient(esportsApiConfig) {
+) : EsportsApiHttpClient(esportsApiConfig) {
 
     /**
      * @return The list of all leagues pulled from the API
      */
     fun getLeagues(): List<League> {
         val res = super.get("getLeagues")
-        return parser.parseJsonObject(StringReader(res))
-            .obj("data")
-            ?.array<JsonObject>("leagues")
-            ?.mapChildrenObjectsOnly {
-                return@mapChildrenObjectsOnly parser.parse<League>(it.toJsonString())
-                    ?: throw KlaxonException("League parsing failed")
-            }?.toList() ?: throw KlaxonException("Parsing Failed")
+        println(res)
+        return parser.decodeFromString<JsonObject>(res)["data"]?.jsonObject?.get("leagues")?.jsonArray
+            ?.map { parser.decodeFromJsonElement(it.jsonObject) }
+            ?: throw SerializationException()
     }
 
     /**
@@ -48,6 +45,6 @@ class LeagueClient(
     }
 
     companion object {
-        private val parser = Klaxon()
+        private val parser = Json
     }
 }

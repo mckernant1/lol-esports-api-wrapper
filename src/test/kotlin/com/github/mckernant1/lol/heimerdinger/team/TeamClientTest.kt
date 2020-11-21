@@ -1,6 +1,6 @@
 package com.github.mckernant1.lol.heimerdinger.team
 
-import com.github.mckernant1.lolapi.ClientBaseTest
+import com.github.mckernant1.lol.heimerdinger.ClientBaseTest
 import org.apache.http.HttpException
 import org.junit.Test
 

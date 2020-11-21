@@ -1,6 +1,6 @@
 package com.github.mckernant1.lol.heimerdinger.games
 
-import com.beust.klaxon.Json
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -12,7 +12,7 @@ data class PerkMetaData(
 
 @Serializable
 data class PlayerFrame(
-    @Json("participantId") val playerId: Double,
+    @SerialName("participantId") val playerId: Double,
     val level: Double,
     val kills: Double,
     val deaths: Double,
@@ -38,6 +38,6 @@ data class PlayerFrame(
 
 @Serializable
 data class DetailFrame(
-    @Json("rfc460Timestamp") val timestamp: String,
-    @Json("participants") val participantData: List<PlayerFrame>
+    @SerialName("rfc460Timestamp") val timestamp: String,
+    @SerialName("participants") val participantData: List<PlayerFrame>
 )
