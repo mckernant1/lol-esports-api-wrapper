@@ -21,7 +21,6 @@ open class EsportsApiHttpClient(
 ) {
     private val httpClient = CachingHttpClients
         .custom()
-        .setCacheConfig(esportsApiConfig.cacheConfig)
         .addInterceptorFirst { httpRequest: HttpRequest, _: HttpContext ->
             httpRequest.addHeader(
                 "x-api-key",

@@ -1,7 +1,5 @@
 package com.github.mckernant1.lol.heimerdinger.config
 
-import org.apache.http.impl.client.cache.CacheConfig
-
 /**
  * @param endpointHost the host of the API to reach out to
  * @param languageCode the language code ENUM of the language you want
@@ -11,15 +9,14 @@ import org.apache.http.impl.client.cache.CacheConfig
 data class EsportsApiConfig(
     val endpointHost: HostUrl = HostUrl.ESPORTS_API_1,
     val languageCode: LanguageCode = LanguageCode.EN_US,
-    val logger: (String) -> Unit = {},
-    val cacheConfig: CacheConfig? = CacheConfig.DEFAULT
+    val logger: (String) -> Unit = {}
 ) {
     init {
-        this.println("Instantiating Config object with Options: host: '$endpointHost', language: '${languageCode.code}', logger: '$logger', cacheConfig: '$cacheConfig'")
+        this.println("Instantiating Config object with Options: host: '$endpointHost', language: '${languageCode.code}', logger: '$logger'")
     }
 
     internal fun println(s: String) {
-        logger("[ESPORTS_API_WRAPPER]: $s")
+        logger(s)
     }
 }
 

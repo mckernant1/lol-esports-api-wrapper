@@ -9,7 +9,6 @@ import org.junit.Test
 internal class GameClientTest : ClientBaseTest() {
 
     override val noCacheEsportsApiConfig = EsportsApiConfig(
-        cacheConfig = cacheConfig,
         endpointHost = HostUrl.LIVE_STATS_API
     )
 

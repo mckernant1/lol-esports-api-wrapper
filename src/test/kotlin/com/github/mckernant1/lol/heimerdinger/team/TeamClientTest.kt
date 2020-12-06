@@ -22,7 +22,7 @@ internal class TeamClientTest : ClientBaseTest() {
             assert(cloud9.slug == "cloud9")
         } catch (e: HttpException) {
             if (e.message?.contains("Server response timeout") == true) {
-                noCacheEsportsApiConfig.println("Server timeout error. Skipping test")
+                println("Server timeout error. Skipping test")
             } else {
                throw e
             }
