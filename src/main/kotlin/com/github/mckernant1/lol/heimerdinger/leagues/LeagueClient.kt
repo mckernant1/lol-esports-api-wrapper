@@ -15,7 +15,6 @@ class LeagueClient(
      */
     fun getLeagues(): List<League> {
         val res = super.get("getLeagues")
-        println(res)
         return parser.decodeFromString<JsonObject>(res)["data"]?.jsonObject?.get("leagues")?.jsonArray
             ?.map { parser.decodeFromJsonElement(it.jsonObject) }
             ?: throw SerializationException()

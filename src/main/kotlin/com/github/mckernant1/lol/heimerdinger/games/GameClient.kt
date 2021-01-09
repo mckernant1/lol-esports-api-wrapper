@@ -36,11 +36,8 @@ class GameClient(
         )
 
         val gameJson = parser.decodeFromString<JsonObject>(gameString)
-        println(gameJson)
         val gameData = parser.decodeFromJsonElement<GameData>(gameJson["gameMetadata"]!!)
-        println(gameData)
         val frames = parser.decodeFromJsonElement<List<Frame>>(gameJson["frames"]!!)
-        println(frames)
 
         return Game(gameData, frames)
     }
