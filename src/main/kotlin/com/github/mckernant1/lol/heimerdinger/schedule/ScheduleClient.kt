@@ -146,10 +146,11 @@ class ScheduleClient(
         val team1 = teams?.get(0)?.jsonObject?.get("name")?.jsonPrimitive?.content ?: return null
         val team2 = teams?.get(1)?.jsonObject?.get("name")?.jsonPrimitive?.content ?: return null
 
-        val team1Results = teams?.get(0)?.jsonObject?.get("result")?.jsonObject
-
-        val team2Results = teams?.get(1)?.jsonObject?.get("result")?.jsonObject
-
+        val (team1Results, team2Results) = try {
+            Pair(teams?.get(0)?.jsonObject?.get("result")?.jsonObject, teams?.get(1)?.jsonObject?.get("result")?.jsonObject)
+        } catch (iae: IllegalArgumentException) {
+            return null
+        }
         val team1NumWins: Int = team1Results?.get("gameWins")?.jsonPrimitive?.int ?: 0
 
         val team2NumWins: Int = team2Results?.get("gameWins")?.jsonPrimitive?.int ?: 0

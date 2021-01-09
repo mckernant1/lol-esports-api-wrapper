@@ -1,11 +1,13 @@
 package com.github.mckernant1.lol.heimerdinger.schedule
 
 import com.github.mckernant1.lol.heimerdinger.ClientBaseTest
+import com.github.mckernant1.lol.heimerdinger.tournaments.TournamentClient
 import org.junit.Test
 
 internal class ScheduleClientTest : ClientBaseTest() {
 
     private val scheduleClient = ScheduleClient(noCacheEsportsApiConfig)
+    private val tournamentClient = TournamentClient(noCacheEsportsApiConfig)
 
     @Test
     fun getSplit() {
@@ -24,5 +26,12 @@ internal class ScheduleClientTest : ClientBaseTest() {
     fun getSplitForWorlds() {
         val worlds = scheduleClient.getSplitByYearAndNumber("98767975604431411", 2020)
         assert(worlds.matches.isNotEmpty())
+    }
+
+    @Test
+    fun getMostRecentSplit() {
+        val tournament = tournamentClient.getMostRecentTournament("98767991299243165")
+        val split = scheduleClient.getSplitByTournament("98767991299243165", tournament)
+        println(split)
     }
 }
