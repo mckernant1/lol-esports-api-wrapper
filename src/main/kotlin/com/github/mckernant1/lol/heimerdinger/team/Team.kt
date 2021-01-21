@@ -10,7 +10,7 @@ data class Player(
     val firstName: String,
     val lastName: String,
     val role: String,
-    @SerialName("image") val imageURL: String
+    @SerialName("image") val imageURL: String?
 ) : java.io.Serializable
 
 @Serializable
