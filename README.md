@@ -24,7 +24,7 @@ repositories {
 ...
 dependencies {
     ...
-    implementation("com.github.mckernant1:lol-esports-api-wrapper:0.1.18")
+    implementation("com.github.mckernant1:lol-esports-api-wrapper:+")
 }
 ```
 
