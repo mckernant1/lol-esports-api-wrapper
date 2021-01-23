@@ -3,18 +3,22 @@
 [![Code Coverage](https://codecov.io/gh/mckernant1/LolEsportsApiWrapper/branch/master/graph/badge.svg)](https://codecov.io/gh/mckernant1/LolEsportsApiWrapper)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.mckernant1/lol-esports-api-wrapper/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.mckernant1/lol-esports-api-wrapper)
 
-This is a work in progress!
+## Info
+This is a wrapper around esports api calls in Kotlin.
+It converts response data into Java objects that are much easier to deal with.
 
-The current Lol Esports API is confusing and weird
+Enjoy!
 
-Esports API Docs
+### Esports API Docs
+These are the docs That are available for the Esports API. 
+
 https://vickz84259.github.io/lolesports-api-docs/
 
 
-This is a wrapper around the API calls to make it easier for people to develop against it.
-
 ### Install via Gradle
 Make sure you add maven central and jcenter
+Maven Central Link: https://search.maven.org/artifact/com.github.mckernant1/lol-esports-api-wrapper/0.1.19/jar
+
 ```kotlin
 
 repositories {
@@ -62,15 +66,11 @@ endpointHost: the host of the API to reach out to. Different clients use differe
 
 languageCode: the language code ENUM of the language you want. Enum is [here](https://github.com/mckernant1/LolEsportsApiWrapper/blob/master/src/main/kotlin/com/github/mckernant1/lolapi/config/LanguageCode.kt)
 
-logger: Specify a PrintStream for the config. Default is null. Can input System.out or System.err
-
-cacheConfig: Specify Caching properties for the httpClient
-
+logger: Specify a Print function for the config. 
 ```kotlin
 
 data class EsportsApiConfig(
-    val endpointHost: String = "esports-api.lolesports.com/persisted/gw/",
+    val endpointHost: HostUrl = HostUrl.ESPORTS_API_1,
     val languageCode: LanguageCode = LanguageCode.EN_US,
-    val logger: (String) -> Unit = {}
 )
 ```
