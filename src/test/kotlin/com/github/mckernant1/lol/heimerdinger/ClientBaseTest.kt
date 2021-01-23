@@ -14,7 +14,5 @@ internal open class ClientBaseTest {
             println("${description?.className}: ${description?.methodName} succeeded taking ${TimeUnit.NANOSECONDS.toMillis(nanos)} milliseconds")
     }
 
-    protected open val noCacheEsportsApiConfig = EsportsApiConfig(
-        logger = { println(it) }
-    )
+    protected open val noCacheEsportsApiConfig = EsportsApiConfig()
 }

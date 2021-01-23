@@ -46,7 +46,6 @@ class ScheduleClient(
         val endDate = LocalDate.parse(tourney.endDate, DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay(
             ZoneId.of("UTC")
         )
-        esportsApiConfig.println("Start: $startDate end: $endDate")
         var matches = parseMatches(json).toMutableList()
         var prevJson = json
         while (matches.find { it.date < startDate } == null) {

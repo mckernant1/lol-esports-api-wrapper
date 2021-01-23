@@ -1,6 +1,7 @@
 package com.github.mckernant1.lol.heimerdinger
 
 import com.github.mckernant1.lol.heimerdinger.config.EsportsApiConfig
+import com.github.mckernant1.lol.heimerdinger.internal.getLogger
 import org.apache.http.HttpException
 import org.apache.http.HttpRequest
 import org.apache.http.HttpStatus
@@ -44,11 +45,11 @@ open class EsportsApiHttpClient(
         }
         val fullURI = someURI.build()
 
-        esportsApiConfig.println("Executing get request on URL: ${fullURI.toASCIIString()}")
+        logger.trace("Executing get request on URL: ${fullURI.toASCIIString()}")
         val req = HttpGet(fullURI)
 
         val res = httpClient.execute(req, context)
-        esportsApiConfig.println(
+        logger.trace(
             when (context.cacheResponseStatus) {
                 CacheResponseStatus.CACHE_HIT -> "Hit the Cache"
                 CacheResponseStatus.CACHE_MODULE_RESPONSE -> "The response was generated directly by the Cache_module"
@@ -77,7 +78,11 @@ open class EsportsApiHttpClient(
     }
 
     fun close() {
-        esportsApiConfig.println("Closing the httpClient")
+        logger.debug("Closing the httpClient")
         httpClient.close()
+    }
+
+    companion object {
+        val logger = getLogger(this::class)
     }
 }

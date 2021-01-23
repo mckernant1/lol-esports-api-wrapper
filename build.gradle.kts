@@ -16,7 +16,7 @@ plugins {
 }
 
 group = "com.github.mckernant1"
-version = "0.1.19"
+version = "0.1.20"
 
 repositories {
     mavenCentral()
@@ -29,6 +29,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1")
     implementation("org.apache.httpcomponents:httpclient-cache:4.5.12")
+    implementation("org.slf4j:slf4j-simple:1.7.30")
     testImplementation("junit:junit:4.12")
 }
 
