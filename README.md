@@ -1,6 +1,6 @@
 # Lol Esports API Wrapper
 
-[![Code Coverage](https://codecov.io/gh/mckernant1/LolEsportsApiWrapper/branch/master/graph/badge.svg)](https://codecov.io/gh/mckernant1/LolEsportsApiWrapper)
+[![codecov](https://codecov.io/gh/mckernant1/lol-esports-api-wrapper/branch/master/graph/badge.svg?token=YU57J4LHYF)](https://codecov.io/gh/mckernant1/lol-esports-api-wrapper)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.mckernant1/lol-esports-api-wrapper/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.mckernant1/lol-esports-api-wrapper)
 [![Discord Chat](https://img.shields.io/discord/802610953396551720?label=support)](https://discord.gg/Dvq8f5KxZT)
 
