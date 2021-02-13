@@ -4,6 +4,7 @@ import com.github.mckernant1.lol.heimerdinger.EsportsApiHttpClient
 import com.github.mckernant1.lol.heimerdinger.config.EsportsApiConfig
 import com.github.mckernant1.lol.heimerdinger.leagues.LeagueClient
 import com.github.mckernant1.lol.heimerdinger.schedule.ScheduleClient
+import com.github.mckernant1.lol.heimerdinger.schedule.Split
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
@@ -42,6 +43,16 @@ class TournamentClient(
 
     fun getStandingsForLeague(leagueId: String, splitYear: Int, splitNumber: Int? = null): List<Standing> {
         val split = scheduleClient.getSplitByYearAndNumber(leagueId, splitYear, splitNumber)
+        return getStandingsBySplit(split)
+    }
+    fun getStandingsForMostRecentTournamentInLeague(leagueId: String): List<Standing> {
+        val tournament = getMostRecentTournament(leagueId)
+        val split = scheduleClient.getSplitByTournament(leagueId, tournament)
+
+        return getStandingsBySplit(split)
+    }
+
+    fun getStandingsBySplit(split: Split): List<Standing> {
         val teams = mutableSetOf<String>()
 
         split.matches.forEach {
@@ -55,6 +66,7 @@ class TournamentClient(
                 split.matches.count { match -> (match.team1 == it || match.team2 == it) && it != match.winner && match.winner != "TBD"})
         }
     }
+
 
     fun getStandingsForLeagueByName(leagueName: String, splitYear: Int, splitNumber: Int? = null): List<Standing>  {
         val leagueClient = LeagueClient()
