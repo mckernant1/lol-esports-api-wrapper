@@ -44,6 +44,8 @@ class LeagueClient(
     }
 
     companion object {
-        private val parser = Json
+        private val parser = Json {
+            ignoreUnknownKeys = true
+        }
     }
 }
